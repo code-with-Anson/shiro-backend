@@ -1,1 +1,9 @@
-spring.application.name=shiro-backend
+spring:
+  application:
+    name: shiro
+  datasource:
+    url: jdbc:mysql://${db.host}:${db.port}/${db.database}?useSSL=false&serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8
+    username: ${db.username}
+    password: ${db.password}
+  profiles:
+    active: local
