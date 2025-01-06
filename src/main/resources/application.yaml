@@ -7,3 +7,15 @@ spring:
     password: ${db.password}
   profiles:
     active: local
+logging:
+  level:
+    com.shiro: debug
+  pattern:
+    dateformat: HH:mm:ss:SSS
+mybatis-plus:
+  type-aliases-package: com.shiro.backend.domain.po
+  global-config:
+    db-config:
+      logic-delete-field: is_deleted
+  configuration:
+    default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler

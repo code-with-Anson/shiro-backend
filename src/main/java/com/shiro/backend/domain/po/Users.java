@@ -1,15 +1,19 @@
 package com.shiro.backend.domain.po;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
-import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.shiro.backend.enums.Gender;
+import com.shiro.backend.enums.isDeletedEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -23,7 +27,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("users")
-@ApiModel(value="Users对象", description="用户表")
+@ApiModel(value = "Users对象", description = "用户表")
 public class Users implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -39,10 +43,14 @@ public class Users implements Serializable {
     private String password;
 
     @ApiModelProperty(value = "性别，0是男性，1是女性，预留扩展数值支持其他选项")
-    private Integer sex;
+    private Gender sex;
 
     @ApiModelProperty(value = "用户头像URL，默认URL由后端管理")
     private String avatar;
+
+    @TableLogic
+    @ApiModelProperty(value = "逻辑删除字段，标记是否被删除")
+    private isDeletedEnum isDeleted;
 
     @ApiModelProperty(value = "记录创建时间")
     private LocalDateTime createdAt;
