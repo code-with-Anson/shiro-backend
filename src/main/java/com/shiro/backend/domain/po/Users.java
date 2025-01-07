@@ -42,8 +42,11 @@ public class Users implements Serializable {
     @ApiModelProperty(value = "加密后的密码")
     private String password;
 
-    @ApiModelProperty(value = "性别，0是男性，1是女性，预留扩展数值支持其他选项")
+    @ApiModelProperty(value = "性别，0是男性，1是女性，2是其他，存在Gender枚举类")
     private Gender sex;
+
+    @ApiModelProperty(value = "这是用户的邮箱，邮箱是之后用户忘记密码还能登录的重要凭据")
+    private String email;
 
     @ApiModelProperty(value = "用户头像URL，默认URL由后端管理")
     private String avatar;

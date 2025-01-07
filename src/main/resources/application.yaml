@@ -7,11 +7,13 @@ spring:
     password: ${db.password}
   profiles:
     active: local
+
 logging:
   level:
     com.shiro: debug
   pattern:
     dateformat: HH:mm:ss:SSS
+
 mybatis-plus:
   type-aliases-package: com.shiro.backend.domain.po
   global-config:
@@ -19,3 +21,20 @@ mybatis-plus:
       logic-delete-field: is_deleted
   configuration:
     default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
+
+knife4j:
+  enable: true
+  openapi:
+    title: Shiro官方文档
+    description: "致力于让生活更清晰"
+    email: a2795757650@gmail.com
+    concat: Anson
+    group:
+      default:
+        group-name: main
+        api-rule: package
+        api-rule-resources:
+          - com.shiro.backend.controller
+
+user:
+  default-avatar: ${user.avatar-url}

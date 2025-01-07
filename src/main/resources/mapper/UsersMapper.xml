@@ -2,4 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.shiro.backend.mapper.UsersMapper">
 
+    <select id="findDeletedUsers" resultType="com.shiro.backend.domain.po.Users">
+        select *
+        from users
+        where is_deleted = 1
+    </select>
+
+    <!-- 动态查询逻辑删除状态 -->
+    <select id="findUsersByDeletedStatus" resultType="com.shiro.backend.domain.po.Users">
+        SELECT *
+        FROM users
+        WHERE is_deleted = #{deletedStatus.value}
+    </select>
 </mapper>
