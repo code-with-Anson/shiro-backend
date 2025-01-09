@@ -2,7 +2,6 @@ package com.shiro.backend.controller;
 
 
 import com.shiro.backend.domain.dto.UsersDTO;
-import com.shiro.backend.domain.po.Users;
 import com.shiro.backend.service.IUsersService;
 import com.shiro.backend.utils.R;
 import io.swagger.annotations.Api;
@@ -36,9 +35,8 @@ public class UsersController {
     @ApiOperation("新增用户")
     @PostMapping("/register")
     public R<String> register(UsersDTO usersDTO) {
-        // 转换 DTO 到实体
-        Users newUser = usersDTO.toEntity();
-        usersService.save(newUser);
+        //saveNewUser内部集成了重复检测，通过抛出异常来出发全局异常拦截器返回给前端错误
+        usersService.saveNewUser(usersDTO);
         return R.success("成功注册新用户");
     }
 

@@ -1,7 +1,8 @@
 package com.shiro.backend.service;
 
-import com.shiro.backend.domain.po.Users;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.shiro.backend.domain.dto.UsersDTO;
+import com.shiro.backend.domain.po.Users;
 
 /**
  * <p>
@@ -12,5 +13,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2025-01-07
  */
 public interface IUsersService extends IService<Users> {
+    public Users findUsersByEmail(String email);
 
+    public void saveNewUser(UsersDTO usersDTO);
 }

@@ -10,7 +10,12 @@ spring:
 
 logging:
   level:
-    com.shiro: debug
+    com:
+      shiro:
+        backend:
+          mapper: debug
+          service: info
+          controller: info
   pattern:
     dateformat: HH:mm:ss:SSS
 

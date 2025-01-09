@@ -89,4 +89,13 @@ class UsersTest {
         System.out.println("下面列出逻辑删除状态为" + users.get(0).getIsDeleted() + "的学生:");
         users.forEach(System.out::println);
     }
+
+    @Test
+    void findUsersByEmail() {
+        LambdaQueryWrapper<Users> queryWrapper = new LambdaQueryWrapper<Users>()
+                .eq(Users::getEmail, "123@123.com");
+
+        List<Users> usersList = usersMapper.selectList(queryWrapper);
+        usersList.forEach(System.out::println);
+    }
 }
