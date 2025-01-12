@@ -1,8 +1,8 @@
 package com.shiro.backend.controller;
 
 
+import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Anson
  * @since 2025-01-07
  */
+@Api(tags = "循环账单接口")
 @RestController
 @RequestMapping("/renew-bill")
 public class RenewBillController {

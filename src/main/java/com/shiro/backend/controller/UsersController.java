@@ -10,6 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,7 +37,7 @@ public class UsersController {
      */
     @ApiOperation("用户注册")
     @PostMapping("/register")
-    public R<String> register(UsersDTO usersDTO) {
+    public R<String> register(@RequestBody UsersDTO usersDTO) {
         //saveNewUser内部集成了重复检测，通过抛出异常来出发全局异常拦截器返回给前端错误
         usersService.saveNewUser(usersDTO);
         return R.success("成功注册新用户");
@@ -44,7 +45,7 @@ public class UsersController {
 
     @ApiOperation("用户登录")
     @PostMapping("/login")
-    public UsersLoginVO login(LoginFormDTO loginFormDTO) {
+    public UsersLoginVO login(@RequestBody LoginFormDTO loginFormDTO) {
         return usersService.login(loginFormDTO);
     }
 

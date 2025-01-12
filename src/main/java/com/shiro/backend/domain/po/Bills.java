@@ -1,17 +1,19 @@
 package com.shiro.backend.domain.po;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.shiro.backend.enums.BillType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -25,7 +27,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("bills")
-@ApiModel(value="Bills对象", description="账单记录表")
+@ApiModel(value = "Bills对象", description = "账单记录表")
 public class Bills implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -41,10 +43,10 @@ public class Bills implements Serializable {
     private BigDecimal amount;
 
     @ApiModelProperty(value = "账单类型，收入或支出，使用整数表示")
-    private Integer type;
+    private BillType type;
 
     @ApiModelProperty(value = "交易分类ID，用来记录交易的类型")
-    private Integer categoryId;
+    private Long categoryId;
 
     @ApiModelProperty(value = "消费详情，可为空，用于记录备注信息")
     private String detail;

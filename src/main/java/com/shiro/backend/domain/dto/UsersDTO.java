@@ -9,7 +9,7 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 
 @Data
-@ApiModel(description = "用户注册数据传输对象")
+@ApiModel(description = "用户注册-数据传输对象")
 public class UsersDTO {
 
     @ApiModelProperty(value = "昵称，1到10个字符", required = true, example = "Alice")
@@ -18,8 +18,8 @@ public class UsersDTO {
     @ApiModelProperty(value = "加密后的密码", required = true, example = "123456")
     private String password;
 
-    @ApiModelProperty(value = "性别，必须为 MALE 或 FEMALE", required = true, example = "MALE")
-    private String sex;
+    @ApiModelProperty(value = "性别，为男或女", required = true, example = "女")
+    private Gender sex;
 
     @ApiModelProperty(value = "用户邮箱，存在唯一约束", required = true, example = "123@123.com")
     private String email;
@@ -35,7 +35,7 @@ public class UsersDTO {
         Users user = new Users();
         user.setName(this.name);
         user.setPassword(this.password);
-        user.setSex(Gender.valueOf(this.sex.toUpperCase()));
+        user.setSex(this.sex);
         user.setEmail(this.email);
         user.setAvatar(defaultAvatar);
         user.setIsDeleted(isDeletedEnum.notDeleted);

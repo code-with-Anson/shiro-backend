@@ -1,7 +1,8 @@
 package com.shiro.backend.service;
 
-import com.shiro.backend.domain.po.Bills;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.shiro.backend.domain.dto.BillsDTO;
+import com.shiro.backend.domain.po.Bills;
 
 /**
  * <p>
@@ -12,5 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2025-01-07
  */
 public interface IBillsService extends IService<Bills> {
-
+    void saveBills(BillsDTO billsDTO);
 }

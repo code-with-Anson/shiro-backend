@@ -1,5 +1,7 @@
 package com.shiro.backend.enums;
 
+import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 @Getter
@@ -7,8 +9,10 @@ public enum ResponseCode {
     SUCCESS(20039, "成功"),
     FAILURE(50039, "失败");
 
-    private final int value; // 使用 final
-    private final String description; // 使用 final
+    @EnumValue
+    private final int value;
+    @JsonValue
+    private final String description;
 
 
     ResponseCode(int value, String description) {

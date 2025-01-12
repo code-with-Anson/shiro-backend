@@ -1,8 +1,8 @@
 package com.shiro.backend.controller;
 
 
-import com.shiro.backend.domain.dto.BillsDTO;
-import com.shiro.backend.service.IBillsService;
+import com.shiro.backend.domain.dto.AddRenewCategoryDTO;
+import com.shiro.backend.service.IRenewCategoryService;
 import com.shiro.backend.utils.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,23 +14,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- * 账单记录表 前端控制器
+ * 循环付费账单分类表 前端控制器
  * </p>
  *
  * @author Anson
- * @since 2025-01-07
+ * @since 2025-01-12
  */
-@Api(tags = "账单相关接口")
+@Api(tags = "循环账单分类接口")
 @RestController
-@RequestMapping("/bills")
 @RequiredArgsConstructor
-public class BillsController {
-    private final IBillsService billsService;
+@RequestMapping("/renew-category")
+public class RenewCategoryController {
+    private final IRenewCategoryService renewCategoryService;
 
-    @ApiOperation("记录账单")
+    @ApiOperation("添加循环账单分类")
     @PostMapping("/add")
-    public R<String> addNewBill(@RequestBody BillsDTO billsDTO) {
-        billsService.saveBills(billsDTO);
+    public R<String> addNewRenewCategory(@RequestBody AddRenewCategoryDTO addRenewCategoryDTO) {
+        renewCategoryService.addNewRenewCategory(addRenewCategoryDTO);
         return R.success("成功添加！");
     }
 }

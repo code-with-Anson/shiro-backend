@@ -51,20 +51,20 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
 
     @Override
     public void saveNewUser(UsersDTO usersDTO) {
-        //将得到的DTO数据传输对象转换为实体
-        Users newUser = usersDTO.toEntity();
-        newUser.setPassword(passwordEncoder.encode(usersDTO.getPassword()));
-        //构造自定义查询wrapper
+        //1.将得到的DTO数据传输对象转换为实体
+        Users user = usersDTO.toEntity();
+        user.setPassword(passwordEncoder.encode(usersDTO.getPassword()));
+        //2.构造自定义查询wrapper
         LambdaQueryWrapper<Users> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Users::getEmail, usersDTO.getEmail());
-        //收集查询到的数据
+        //3.收集查询到的数据
         List<Users> usersList = usersMapper.selectList(queryWrapper);
-        //如果已经存在当前邮箱则抛出异常
+        //4.如果已经存在当前邮箱则抛出异常
         if (!usersList.isEmpty()) {
             throw new EmailExistException(MessageConstant.EMAIL_EXIST);
         }
-        //插入新用户并返回用户
-        usersMapper.insert(newUser);
+        //5.插入新用户并返回用户
+        save(user);
     }
 
     @Override
