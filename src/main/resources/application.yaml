@@ -43,3 +43,18 @@ knife4j:
 
 user:
   default-avatar: ${user.avatar-url}
+
+shiro:
+  jwt:
+    # 设置jwt签名加密时使用的秘钥
+    secret-key: ${shiro.jwt.secret-key}
+    # 设置jwt过期时间为30天
+    secret-expire: ${shiro.jwt.secret-expire}
+    # 设置前端传递过来的令牌名称
+    user-token-name: ${shiro.jwt.user-token-name}
+
+  auth:
+    exclude-paths:
+      - /doc.html
+      - /users/register
+      - /users/login

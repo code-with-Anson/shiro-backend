@@ -1,5 +1,7 @@
 package com.shiro.backend.exception;
 
+import lombok.Getter;
+
 /**
  * 自定义基本异常类
  * 基于RuntimeException，扩展了返回信息属性
@@ -7,11 +9,22 @@ package com.shiro.backend.exception;
  * 这样就可以让前端自行判断错误类型并显示不同语言的报错
  * 以便于支持多语种业务场景
  */
+@Getter
 public class BaseException extends RuntimeException {
-    public BaseException() {
+    private int code;
+
+    public BaseException(String msg, int code) {
+        super(msg);
+        this.code = code;
     }
 
-    public BaseException(String msg) {
-        super(msg);
+    public BaseException(String msg, Throwable e, int code) {
+        super(msg, e);
+        this.code = code;
+    }
+
+    public BaseException(Throwable e, int code) {
+        super(e);
+        this.code = code;
     }
 }

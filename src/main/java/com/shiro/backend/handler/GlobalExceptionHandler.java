@@ -4,6 +4,7 @@ import com.shiro.backend.constant.MessageConstant;
 import com.shiro.backend.exception.BaseException;
 import com.shiro.backend.utils.R;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -11,17 +12,24 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
     /**
-     * 处理业务常规异常
+     * 处理自定义业务异常
      *
-     * @param ex
+     * @param e
      * @return
      */
-    @ExceptionHandler
-    public R exceptionHandler(BaseException ex) {
-        log.error("运行异常-具体异常：{}", ex.getMessage());
-        return R.failure(ex.getMessage());
+    @ExceptionHandler(BaseException.class)
+    public Object handleBadRequestException(BaseException e) {
+        log.error("自定义异常 -> {} , 异常原因：{}  ", e.getClass().getName(), e.getMessage());
+        log.debug("", e);
+        return processResponse(e);
     }
+
+    private ResponseEntity<R<Void>> processResponse(BaseException e) {
+        return ResponseEntity.status(e.getCode()).body(R.failure(e));
+    }
+
 
     /**
      * 处理业务中的未定义异常

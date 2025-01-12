@@ -45,7 +45,7 @@ public class Users implements Serializable {
     @ApiModelProperty(value = "性别，0是男性，1是女性，2是其他，存在Gender枚举类")
     private Gender sex;
 
-    @ApiModelProperty(value = "这是用户的邮箱，邮箱是之后用户忘记密码还能登录的重要凭据")
+    @ApiModelProperty(value = "用于存放用户的邮箱，唯一约束，邮箱是用户登录以及找回密码的重要凭据")
     private String email;
 
     @ApiModelProperty(value = "用户头像URL，默认URL由后端管理")
