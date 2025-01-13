@@ -1,10 +1,12 @@
 package com.shiro.backend.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.shiro.backend.domain.dto.BillsDTO;
+import com.shiro.backend.domain.dto.AddBillsDTO;
 import com.shiro.backend.domain.dto.QueryMonthBillsDTO;
+import com.shiro.backend.domain.dto.UpdateBillsDTO;
 import com.shiro.backend.domain.po.Bills;
 import com.shiro.backend.domain.vo.QueryMonthBillsVO;
+import com.shiro.backend.utils.R;
 
 import java.util.List;
 
@@ -20,9 +22,9 @@ public interface IBillsService extends IService<Bills> {
     /**
      * 保存账单
      *
-     * @param billsDTO
+     * @param addBillsDTO
      */
-    void saveBills(BillsDTO billsDTO);
+    void saveBills(AddBillsDTO addBillsDTO);
 
     /**
      * 按照年月获取用户账单
@@ -33,4 +35,11 @@ public interface IBillsService extends IService<Bills> {
     List<QueryMonthBillsVO> queryBills(QueryMonthBillsDTO queryMonthBillsDTO);
 
 
+    /**
+     * 更新指定账单
+     *
+     * @param updateBillsDTO
+     * @return
+     */
+    R<String> updateBills(UpdateBillsDTO updateBillsDTO);
 }

@@ -1,8 +1,9 @@
 package com.shiro.backend.controller;
 
 
-import com.shiro.backend.domain.dto.BillsDTO;
+import com.shiro.backend.domain.dto.AddBillsDTO;
 import com.shiro.backend.domain.dto.QueryMonthBillsDTO;
+import com.shiro.backend.domain.dto.UpdateBillsDTO;
 import com.shiro.backend.domain.vo.QueryMonthBillsVO;
 import com.shiro.backend.service.IBillsService;
 import com.shiro.backend.utils.R;
@@ -33,8 +34,8 @@ public class BillsController {
 
     @ApiOperation("记录账单")
     @PostMapping("/add")
-    public R<String> addNewBill(@RequestBody BillsDTO billsDTO) {
-        billsService.saveBills(billsDTO);
+    public R<String> addNewBill(@RequestBody AddBillsDTO addBillsDTO) {
+        billsService.saveBills(addBillsDTO);
         return R.success("成功添加！");
     }
 
@@ -43,4 +44,11 @@ public class BillsController {
     public List<QueryMonthBillsVO> queryBills(@RequestBody QueryMonthBillsDTO queryMonthBillsDTO) {
         return billsService.queryBills(queryMonthBillsDTO);
     }
+
+    @ApiOperation("更新账单")
+    @PostMapping("update")
+    public R<String> updateBill(@RequestBody UpdateBillsDTO updateBillsDTO) {
+        return billsService.updateBills(updateBillsDTO);
+    }
+
 }

@@ -3,8 +3,9 @@ package com.shiro.backend.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.shiro.backend.domain.dto.BillsDTO;
+import com.shiro.backend.domain.dto.AddBillsDTO;
 import com.shiro.backend.domain.dto.QueryMonthBillsDTO;
+import com.shiro.backend.domain.dto.UpdateBillsDTO;
 import com.shiro.backend.domain.po.Bills;
 import com.shiro.backend.domain.po.Category;
 import com.shiro.backend.domain.vo.QueryMonthBillsVO;
@@ -12,6 +13,7 @@ import com.shiro.backend.exception.CategoryDontExistException;
 import com.shiro.backend.mapper.BillsMapper;
 import com.shiro.backend.mapper.CategoryMapper;
 import com.shiro.backend.service.IBillsService;
+import com.shiro.backend.utils.R;
 import com.shiro.backend.utils.UserContext;
 import org.springframework.stereotype.Service;
 
@@ -39,19 +41,19 @@ public class BillsServiceImpl extends ServiceImpl<BillsMapper, Bills> implements
     /**
      * 保存账单
      *
-     * @param billsDTO
+     * @param addBillsDTO
      */
     @Override
-    public void saveBills(BillsDTO billsDTO) {
+    public void saveBills(AddBillsDTO addBillsDTO) {
         //1.获取当前登录用户
         Long userId = UserContext.getUser();
         //2.创建实体类
-        Bills bills = billsDTO.toEntity();
+        Bills bills = addBillsDTO.toEntity();
         bills.setUserid(userId);
         //3.确保分类存在
         LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper
-                .eq(Category::getId, billsDTO.getCategoryId())
+                .eq(Category::getId, addBillsDTO.getCategoryId())
                 .eq(Category::getUserId, bills.getUserid());
         List<Category> categories = categoryMapper.selectList(queryWrapper);
         //4.存储账单
@@ -83,5 +85,26 @@ public class BillsServiceImpl extends ServiceImpl<BillsMapper, Bills> implements
             return Collections.emptyList();
         }
         return bills.stream().map(QueryMonthBillsVO::toVO).toList();
+    }
+
+    /**
+     * 更新指定账单
+     *
+     * @param updateBillsDTO
+     * @return
+     */
+    @Override
+    public R<String> updateBills(UpdateBillsDTO updateBillsDTO) {
+        Long userId = UserContext.getUser();
+        Bills newBill = updateBillsDTO.toEntity();
+        newBill.setUserid(userId);
+        LambdaQueryWrapper<Bills> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Bills::getUserid, userId)
+                .eq(Bills::getId, newBill.getId());
+        int updateRows = billsMapper.update(newBill, queryWrapper);
+        if (updateRows > 0) {
+            return R.success("更新成功");
+        }
+        return R.failure("更新失败");
     }
 }

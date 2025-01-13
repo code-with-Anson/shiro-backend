@@ -3,8 +3,8 @@ package com.shiro.backend.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.shiro.backend.constant.MessageConstant;
+import com.shiro.backend.domain.dto.AddUsersDTO;
 import com.shiro.backend.domain.dto.LoginFormDTO;
-import com.shiro.backend.domain.dto.UsersDTO;
 import com.shiro.backend.domain.po.Category;
 import com.shiro.backend.domain.po.RenewCategory;
 import com.shiro.backend.domain.po.Users;
@@ -58,13 +58,13 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
 
     @Override
     @Transactional
-    public void saveNewUser(UsersDTO usersDTO) {
+    public void saveNewUser(AddUsersDTO addUsersDTO) {
         //1.将得到的DTO数据传输对象转换为实体
-        Users user = usersDTO.toEntity();
-        user.setPassword(passwordEncoder.encode(usersDTO.getPassword()));
+        Users user = addUsersDTO.toEntity();
+        user.setPassword(passwordEncoder.encode(addUsersDTO.getPassword()));
         //2.构造自定义查询wrapper
         LambdaQueryWrapper<Users> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Users::getEmail, usersDTO.getEmail());
+        queryWrapper.eq(Users::getEmail, addUsersDTO.getEmail());
         //3.收集查询到的数据
         List<Users> usersList = usersMapper.selectList(queryWrapper);
         //4.如果已经存在当前邮箱则抛出异常

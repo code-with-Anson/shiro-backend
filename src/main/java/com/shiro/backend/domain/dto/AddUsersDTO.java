@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 @Data
 @ApiModel(description = "用户注册-数据传输对象")
-public class UsersDTO {
+public class AddUsersDTO {
 
     @ApiModelProperty(value = "昵称，1到10个字符", required = true, example = "Alice")
     private String name;
