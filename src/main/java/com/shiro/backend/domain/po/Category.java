@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("category")
-@ApiModel(value = "Category对象", description = "账单分类表")
+@ApiModel(value = "账单分类实体类")
 public class Category implements Serializable {
 
     private static final long serialVersionUID = 1L;

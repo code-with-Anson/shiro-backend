@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@ApiModel(value = "R", description = "统一响应包装类")
+@ApiModel(value = "统一响应包装类", description = "统一响应包装类")
 public class R<T> {
     @ApiModelProperty(value = "返回给前端的：状态码")
     private int code;

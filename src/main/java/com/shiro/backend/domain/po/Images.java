@@ -1,15 +1,17 @@
 package com.shiro.backend.domain.po;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
-import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -23,7 +25,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("images")
-@ApiModel(value="Images对象", description="图片表，存储账单或周期计费相关的图片附件")
+@ApiModel(value = "图片实体类")
 public class Images implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -41,6 +43,7 @@ public class Images implements Serializable {
     @ApiModelProperty(value = "图片地址，存储后端返回的URL")
     private String url;
 
+    @TableLogic
     @ApiModelProperty(value = "逻辑删除字段，标记是否被删除")
     private Boolean isDeleted;
 

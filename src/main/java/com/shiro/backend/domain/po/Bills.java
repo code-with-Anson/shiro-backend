@@ -2,6 +2,7 @@ package com.shiro.backend.domain.po;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.shiro.backend.enums.BillType;
 import io.swagger.annotations.ApiModel;
@@ -27,7 +28,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("bills")
-@ApiModel(value = "Bills对象", description = "账单记录表")
+@ApiModel(value = "账单记录实体类")
 public class Bills implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -54,6 +55,7 @@ public class Bills implements Serializable {
     @ApiModelProperty(value = "账单日期，精确到年月日，由用户前端输入")
     private LocalDate date;
 
+    @TableLogic
     @ApiModelProperty(value = "逻辑删除字段，标记是否被删除")
     private Boolean isDeleted;
 

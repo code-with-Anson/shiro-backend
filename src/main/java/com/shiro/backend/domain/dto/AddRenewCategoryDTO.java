@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@ApiModel(description = "循环计费分类-数据传输对象")
+@ApiModel(value = "循环计费分类-数据传输对象")
 public class AddRenewCategoryDTO {
     @ApiModelProperty(value = "循环计费分类名称", required = true, example = "测试用循环账单分类")
     private String name;

@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
-@ApiModel(description = "新增常规账单-数据传输对象")
+@ApiModel(value = "新增常规账单-数据传输对象")
 public class AddBillsDTO {
     @ApiModelProperty(value = "金额", required = true, example = "52.52")
     private BigDecimal amount;

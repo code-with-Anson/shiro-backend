@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@ApiModel(description = "常规账单分类-数据传输对象")
+@ApiModel(value = "常规账单分类-数据传输对象")
 public class AddCategoryDTO {
     @ApiModelProperty(value = "常规账单分类名称", required = true, example = "测试用常规账单分类")
     private String name;

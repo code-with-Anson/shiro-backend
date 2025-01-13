@@ -12,5 +12,7 @@ public class MessageConstant {
     public static final String LOGIN_FAILED = "登录失败";
     public static final String UPLOAD_FAILED = "文件上传失败";
     public static final String PASSWORD_EDIT_FAILED = "密码修改失败";
-
+    public static final String ARGS_LOCK = "方法参数缺失";
+    public static final String ARGS_WRONG = "方法参数错误";
+    public static final String LOGIC_DELETE_FAILED = "逻辑删除失败";
 }

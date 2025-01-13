@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("users")
-@ApiModel(value = "Users对象", description = "用户表")
+@ApiModel(value = "用户实体类")
 public class Users implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -60,6 +60,4 @@ public class Users implements Serializable {
 
     @ApiModelProperty(value = "记录更新时间")
     private LocalDateTime updatedAt;
-
-
 }

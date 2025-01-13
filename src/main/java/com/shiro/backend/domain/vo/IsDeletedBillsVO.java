@@ -13,8 +13,8 @@ import java.time.LocalDate;
  * 返回给前端的 查询账单 视觉对象
  */
 @Data
-@ApiModel(value = "按月份查询账单-VO实体")
-public class QueryMonthBillsVO {
+@ApiModel(value = "查询用户被逻辑删除订单-VO实体")
+public class IsDeletedBillsVO {
     @ApiModelProperty(value = "账单ID，唯一约束，主键，由后端插入")
     private Long id;
 
@@ -42,8 +42,8 @@ public class QueryMonthBillsVO {
      * @param bills
      * @return
      */
-    public static QueryMonthBillsVO toVO(Bills bills) {
-        QueryMonthBillsVO vo = new QueryMonthBillsVO();
+    public static IsDeletedBillsVO toVO(Bills bills) {
+        IsDeletedBillsVO vo = new IsDeletedBillsVO();
         vo.setId(bills.getId());
         vo.setAmount(bills.getAmount());
         vo.setType(bills.getType());

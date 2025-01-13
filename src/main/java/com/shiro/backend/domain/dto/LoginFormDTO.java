@@ -7,7 +7,7 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 @Data
-@ApiModel(description = "用户登录-数据传输对象")
+@ApiModel(value = "用户登录-数据传输对象")
 public class LoginFormDTO {
     @ApiModelProperty(value = "邮箱", required = true, example = "alice@alice.com")
     @NotNull(message = "邮箱不能为空")

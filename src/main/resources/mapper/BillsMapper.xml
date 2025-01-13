@@ -2,4 +2,35 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.shiro.backend.mapper.BillsMapper">
 
+    <!-- 查询被逻辑删除的账单 -->
+    <select id="queryBillsByDeletedStatus" resultType="com.shiro.backend.domain.po.Bills">
+        SELECT *
+        FROM bills
+        WHERE is_deleted = #{isDeletedStatus.value}
+          AND userid = #{userid}
+    </select>
+
+    <!-- 恢复被逻辑删除的账单 -->
+    <update id="recoverLogicDeletedBills">
+        UPDATE bills
+        SET is_deleted = #{notDeletedStatus.value}
+        WHERE is_deleted = #{isDeletedStatus.value}
+        AND id IN
+        <foreach item="id" index="index" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <!--彻底删除账单-->
+    <delete id="realDeleteBills">
+        DELETE FROM bills
+        WHERE
+        userid = #{userid}
+        AND id IN
+        <foreach item="id" index="index" collection="bill_ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
 </mapper>
