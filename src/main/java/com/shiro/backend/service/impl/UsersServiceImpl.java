@@ -5,18 +5,23 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.shiro.backend.constant.MessageConstant;
 import com.shiro.backend.domain.dto.LoginFormDTO;
 import com.shiro.backend.domain.dto.UsersDTO;
+import com.shiro.backend.domain.po.Category;
+import com.shiro.backend.domain.po.RenewCategory;
 import com.shiro.backend.domain.po.Users;
 import com.shiro.backend.domain.vo.UsersLoginVO;
 import com.shiro.backend.exception.EmailExistException;
 import com.shiro.backend.exception.PasswordErrorException;
 import com.shiro.backend.exception.UserNotFoundException;
 import com.shiro.backend.mapper.UsersMapper;
+import com.shiro.backend.service.ICategoryService;
+import com.shiro.backend.service.IRenewCategoryService;
 import com.shiro.backend.service.IUsersService;
 import com.shiro.backend.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.List;
@@ -38,6 +43,8 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
     private final UsersMapper usersMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final ICategoryService categoryService;
+    private final IRenewCategoryService renewCategoryService;
     @Value("${shiro.jwt.secret-expire}")
     private Duration tokenTtl;
 
@@ -50,6 +57,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
     }
 
     @Override
+    @Transactional
     public void saveNewUser(UsersDTO usersDTO) {
         //1.将得到的DTO数据传输对象转换为实体
         Users user = usersDTO.toEntity();
@@ -63,8 +71,20 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
         if (!usersList.isEmpty()) {
             throw new EmailExistException(MessageConstant.EMAIL_EXIST);
         }
-        //5.插入新用户并返回用户
+        //5.插入新用户
         save(user);
+
+        //6.给新用户创建默认的常规账单分类和循环账单分类
+        Category category = new Category();
+        RenewCategory renewCategory = new RenewCategory();
+
+        category.setUserId(user.getId());
+        category.setName("汐落");
+        renewCategory.setUserId(user.getId());
+        renewCategory.setName("汐落");
+
+        categoryService.save(category);
+        renewCategoryService.save(renewCategory);
     }
 
     @Override

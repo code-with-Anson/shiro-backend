@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BaseException.class)
     public Object handleBadRequestException(BaseException e) {
         log.error("自定义异常 -> {} , 异常原因：{}  ", e.getClass().getName(), e.getMessage());
-        log.debug("", e);
+        log.debug("详细异常信息", e);
         return processResponse(e);
     }
 
@@ -37,10 +37,10 @@ public class GlobalExceptionHandler {
      * @param ex
      * @return
      */
-    @ExceptionHandler
-    public R handleOtherException(Exception ex) {
-        log.error("系统出现未定义异常", ex);
-        return R.failure(MessageConstant.UNKNOWN_ERROR);
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<R<Void>> handleOtherException(Exception ex) {
+        log.error("系统未定义异常，异常类型：{}，异常信息：{}", ex.getClass().getName(), ex.getMessage(), ex);
+        return ResponseEntity.status(500).body(R.failure(MessageConstant.UNKNOWN_ERROR));
     }
 
 

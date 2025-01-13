@@ -1,3 +1,5 @@
+server:
+  port: 3039
 spring:
   application:
     name: shiro
@@ -7,7 +9,6 @@ spring:
     password: ${db.password}
   profiles:
     active: local
-
 logging:
   level:
     com:

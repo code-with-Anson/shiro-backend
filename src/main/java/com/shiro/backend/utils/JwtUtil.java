@@ -42,7 +42,7 @@ public class JwtUtil {
     public Long parseToken(String token) {
         // 1.校验token是否为空
         if (token == null) {
-            throw new UnauthorizedException("未登录");
+            throw new UnauthorizedException("请先登录");
         }
         // 2.校验并解析jwt
         JWT jwt;

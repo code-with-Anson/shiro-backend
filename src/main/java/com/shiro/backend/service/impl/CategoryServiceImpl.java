@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> implements ICategoryService {
+
     @Override
     public void addNewCategory(AddCategoryDTO addCategoryDTO) {
         //1.获取当前用户
@@ -27,5 +28,6 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         category.setUserId(userId);
         //3.保存当前新增分类
         save(category);
+
     }
 }
