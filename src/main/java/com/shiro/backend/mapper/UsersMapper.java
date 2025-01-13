@@ -19,6 +19,4 @@ public interface UsersMapper extends BaseMapper<Users> {
     List<Users> findDeletedUsers();
 
     List<Users> findUsersByDeletedStatus(@Param("deletedStatus") isDeletedEnum deletedStatus);
-
-
 }

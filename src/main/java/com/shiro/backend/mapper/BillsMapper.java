@@ -21,4 +21,8 @@ public interface BillsMapper extends BaseMapper<Bills> {
     List<Bills> queryBillsByDeletedStatus(@Param("isDeletedStatus") isDeletedEnum isDeletedStatus, @Param("userid") Long userid);
 
     void realDeleteBills(@Param("bill_ids") List<Long> bill_ids, @Param("userid") Long userid);
+
+    List<Bills> selectAllBillsByCategory(@Param("deleteCategoryList") List<Long> deleteCategoryList,
+                                         @Param("userId") Long userId);
+
 }

@@ -32,5 +32,14 @@
         </foreach>
     </delete>
 
-
+    <!--按照分类查询所有账单-->
+    <select id="selectAllBillsByCategory" resultType="com.shiro.backend.domain.po.Bills">
+        SELECT *
+        FROM bills
+        WHERE category_id IN
+        <foreach item="item" index="index" collection="deleteCategoryList" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND userid = #{userId}
+    </select>
 </mapper>
