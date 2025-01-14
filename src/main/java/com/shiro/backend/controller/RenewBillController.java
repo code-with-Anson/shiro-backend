@@ -13,9 +13,10 @@ import com.shiro.backend.utils.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -63,10 +64,9 @@ public class RenewBillController {
     }
 
     @ApiOperation("查询被逻辑删除的循环账单")
-    @GetMapping("/query-deleted-bills")
-    //TODO 这里之后要做分页，传PageDTO进去
-    public List<IsDeletedRenewBillVO> queryIsDeletedBills() {
-        return renewBillService.queryIsDeletedRenewBill();
+    @PostMapping("/query-deleted-bills")
+    public IPage<IsDeletedRenewBillVO> queryIsDeletedBills(@RequestBody PageDTO pageDTO) {
+        return renewBillService.queryIsDeletedRenewBill(pageDTO);
     }
 
 

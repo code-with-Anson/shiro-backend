@@ -1,6 +1,7 @@
 package com.shiro.backend.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.shiro.backend.domain.dto.AddRenewBillDTO;
 import com.shiro.backend.domain.dto.DeleteRenewBillDTO;
@@ -10,8 +11,6 @@ import com.shiro.backend.domain.po.RenewBill;
 import com.shiro.backend.domain.vo.IsDeletedRenewBillVO;
 import com.shiro.backend.domain.vo.QueryRenewBillVO;
 import com.shiro.backend.utils.R;
-
-import java.util.List;
 
 /**
  * <p>
@@ -69,7 +68,7 @@ public interface IRenewBillService extends IService<RenewBill> {
      *
      * @return
      */
-    List<IsDeletedRenewBillVO> queryIsDeletedRenewBill();
+    Page<IsDeletedRenewBillVO> queryIsDeletedRenewBill(PageDTO pageDTO);
 
     /**
      * 彻底删除循环账单

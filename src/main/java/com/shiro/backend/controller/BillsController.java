@@ -1,10 +1,8 @@
 package com.shiro.backend.controller;
 
 
-import com.shiro.backend.domain.dto.AddBillsDTO;
-import com.shiro.backend.domain.dto.DeleteBillsDTO;
-import com.shiro.backend.domain.dto.QueryMonthBillsDTO;
-import com.shiro.backend.domain.dto.UpdateBillsDTO;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.shiro.backend.domain.dto.*;
 import com.shiro.backend.domain.vo.IsDeletedBillsVO;
 import com.shiro.backend.domain.vo.QueryBillsVO;
 import com.shiro.backend.service.IBillsService;
@@ -12,7 +10,10 @@ import com.shiro.backend.utils.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -62,9 +63,9 @@ public class BillsController {
     }
 
     @ApiOperation("查询被逻辑删除的账单")
-    @GetMapping("/query-deleted-bills")
-    public List<IsDeletedBillsVO> queryIsDeletedBills() {
-        return billsService.queryIsDeletedBills();
+    @PostMapping("/query-deleted-bills")
+    public IPage<IsDeletedBillsVO> queryIsDeletedBills(@RequestBody PageDTO pageDTO) {
+        return billsService.queryIsDeletedBills(pageDTO);
     }
 
 

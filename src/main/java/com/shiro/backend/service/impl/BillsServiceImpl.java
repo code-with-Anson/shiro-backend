@@ -2,14 +2,13 @@ package com.shiro.backend.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.shiro.backend.constant.MessageConstant;
-import com.shiro.backend.domain.dto.AddBillsDTO;
-import com.shiro.backend.domain.dto.DeleteBillsDTO;
-import com.shiro.backend.domain.dto.QueryMonthBillsDTO;
-import com.shiro.backend.domain.dto.UpdateBillsDTO;
+import com.shiro.backend.domain.dto.*;
 import com.shiro.backend.domain.po.Bills;
 import com.shiro.backend.domain.po.Category;
+import com.shiro.backend.domain.po.RenewBill;
 import com.shiro.backend.domain.vo.IsDeletedBillsVO;
 import com.shiro.backend.domain.vo.QueryBillsVO;
 import com.shiro.backend.enums.isDeletedEnum;
@@ -147,14 +146,33 @@ public class BillsServiceImpl extends ServiceImpl<BillsMapper, Bills> implements
      * @return
      */
     @Override
-    public List<IsDeletedBillsVO> queryIsDeletedBills() {
+    public Page<IsDeletedBillsVO> queryIsDeletedBills(PageDTO pageDTO) {
+        // 1.获取当前登录用户
         Long userId = UserContext.getUser();
-        List<Bills> isDeletedBills = billsMapper.queryBillsByDeletedStatus(isDeletedEnum.isDeleted, userId);
-        //4.空数据处理，数据转换处理
-        if (isDeletedBills == null || isDeletedBills.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return isDeletedBills.stream().map(IsDeletedBillsVO::toVO).toList();
+
+        // 2.创建分页对象
+        Page<RenewBill> page = new Page<>(pageDTO.getCurrentPage(), pageDTO.getPageSize());
+
+        // 3.执行分页查询
+        Page<Bills> billPage = billsMapper.queryBillsByDeletedStatus(
+                page,
+                isDeletedEnum.isDeleted,
+                userId
+        );
+
+        // 4.转换结果
+        List<IsDeletedBillsVO> voList = billPage.getRecords().stream()
+                .map(IsDeletedBillsVO::toVO)
+                .toList();
+
+        // 5.封装返回结果
+        Page<IsDeletedBillsVO> resultPage = new Page<>();
+        resultPage.setRecords(voList);
+        resultPage.setTotal(billPage.getTotal());
+        resultPage.setCurrent(billPage.getCurrent());
+        resultPage.setSize(billPage.getSize());
+
+        return resultPage;
     }
 
     /**

@@ -1,10 +1,8 @@
 package com.shiro.backend.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.shiro.backend.domain.dto.AddBillsDTO;
-import com.shiro.backend.domain.dto.DeleteBillsDTO;
-import com.shiro.backend.domain.dto.QueryMonthBillsDTO;
-import com.shiro.backend.domain.dto.UpdateBillsDTO;
+import com.shiro.backend.domain.dto.*;
 import com.shiro.backend.domain.po.Bills;
 import com.shiro.backend.domain.vo.IsDeletedBillsVO;
 import com.shiro.backend.domain.vo.QueryBillsVO;
@@ -67,7 +65,7 @@ public interface IBillsService extends IService<Bills> {
      *
      * @return
      */
-    List<IsDeletedBillsVO> queryIsDeletedBills();
+    Page<IsDeletedBillsVO> queryIsDeletedBills(PageDTO pageDTO);
 
     /**
      * 彻底删除账单

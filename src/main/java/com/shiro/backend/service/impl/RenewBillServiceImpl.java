@@ -24,7 +24,6 @@ import com.shiro.backend.utils.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -157,18 +156,33 @@ public class RenewBillServiceImpl extends ServiceImpl<RenewBillMapper, RenewBill
      * @return
      */
     @Override
-    public List<IsDeletedRenewBillVO> queryIsDeletedRenewBill() {
-        //TODO 这里之后要加分页，还有常规账单也要加
-        //1.获取当前登录用户
+    public Page<IsDeletedRenewBillVO> queryIsDeletedRenewBill(PageDTO pageDTO) {
+        // 1.获取当前登录用户
         Long userId = UserContext.getUser();
-        //2.查询账单
-        List<RenewBill> isDeletedRenewBills = renewBillMapper.queryRenewBillByDeletedStatus(isDeletedEnum.isDeleted, userId);
-        //3.空数据处理，数据转换处理
-        if (isDeletedRenewBills == null || isDeletedRenewBills.isEmpty()) {
-            return Collections.emptyList();
-        }
-        //4.封装VO返回
-        return isDeletedRenewBills.stream().map(IsDeletedRenewBillVO::toVO).toList();
+
+        // 2.创建分页对象
+        Page<RenewBill> page = new Page<>(pageDTO.getCurrentPage(), pageDTO.getPageSize());
+
+        // 3.执行分页查询
+        Page<RenewBill> billPage = renewBillMapper.queryRenewBillByDeletedStatus(
+                page,
+                isDeletedEnum.isDeleted,
+                userId
+        );
+
+        // 4.转换结果
+        List<IsDeletedRenewBillVO> voList = billPage.getRecords().stream()
+                .map(IsDeletedRenewBillVO::toVO)
+                .toList();
+
+        // 5.封装返回结果
+        Page<IsDeletedRenewBillVO> resultPage = new Page<>();
+        resultPage.setRecords(voList);
+        resultPage.setTotal(billPage.getTotal());
+        resultPage.setCurrent(billPage.getCurrent());
+        resultPage.setSize(billPage.getSize());
+
+        return resultPage;
     }
 
     /**
