@@ -11,7 +11,7 @@ import com.shiro.backend.domain.dto.UpdateBillsDTO;
 import com.shiro.backend.domain.po.Bills;
 import com.shiro.backend.domain.po.Category;
 import com.shiro.backend.domain.vo.IsDeletedBillsVO;
-import com.shiro.backend.domain.vo.QueryMonthBillsVO;
+import com.shiro.backend.domain.vo.QueryBillsVO;
 import com.shiro.backend.enums.isDeletedEnum;
 import com.shiro.backend.exception.CategoryDontExistException;
 import com.shiro.backend.exception.DeleteBillsWrongArgsException;
@@ -73,7 +73,7 @@ public class BillsServiceImpl extends ServiceImpl<BillsMapper, Bills> implements
      * @return
      */
     @Override
-    public List<QueryMonthBillsVO> queryBills(QueryMonthBillsDTO queryMonthBillsDTO) {
+    public List<QueryBillsVO> queryBills(QueryMonthBillsDTO queryMonthBillsDTO) {
         //1.获取要查询的年份，月份，用户id
         int year = queryMonthBillsDTO.getYear();
         int month = queryMonthBillsDTO.getMonth();
@@ -87,7 +87,7 @@ public class BillsServiceImpl extends ServiceImpl<BillsMapper, Bills> implements
         if (bills == null || bills.isEmpty()) {
             return Collections.emptyList();
         }
-        return bills.stream().map(QueryMonthBillsVO::toVO).toList();
+        return bills.stream().map(QueryBillsVO::toVO).toList();
     }
 
     /**
@@ -104,11 +104,8 @@ public class BillsServiceImpl extends ServiceImpl<BillsMapper, Bills> implements
         LambdaQueryWrapper<Bills> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Bills::getUserid, userId)
                 .eq(Bills::getId, newBill.getId());
-        int updateRows = billsMapper.update(newBill, queryWrapper);
-        if (updateRows > 0) {
-            return R.success("更新成功");
-        }
-        return R.failure("更新失败");
+        billsMapper.update(newBill, queryWrapper);
+        return R.failure("更新成功！");
     }
 
     /**

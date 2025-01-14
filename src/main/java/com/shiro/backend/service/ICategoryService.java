@@ -2,13 +2,10 @@ package com.shiro.backend.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.shiro.backend.domain.dto.AddCategoryDTO;
-import com.shiro.backend.domain.dto.DeleteCategoryDTO;
-import com.shiro.backend.domain.dto.PageDTO;
-import com.shiro.backend.domain.dto.QueryCategoryBillsDTO;
+import com.shiro.backend.domain.dto.*;
 import com.shiro.backend.domain.po.Category;
+import com.shiro.backend.domain.vo.QueryBillsVO;
 import com.shiro.backend.domain.vo.QueryCategoryVO;
-import com.shiro.backend.domain.vo.QueryMonthBillsVO;
 import com.shiro.backend.utils.R;
 
 /**
@@ -26,6 +23,8 @@ public interface ICategoryService extends IService<Category> {
      * @param addCategoryDTO
      */
     R<String> addNewCategory(AddCategoryDTO addCategoryDTO);
+
+    R<String> updateCategory(UpdateCategoryDTO updateCategoryDTO);
 
     /**
      * 查询用户常规账单分类
@@ -48,5 +47,5 @@ public interface ICategoryService extends IService<Category> {
      * @param queryCategoryBillsDTO
      * @return
      */
-    IPage<QueryMonthBillsVO> queryCategoryBills(QueryCategoryBillsDTO queryCategoryBillsDTO);
+    IPage<QueryBillsVO> queryCategoryBills(QueryCategoryBillsDTO queryCategoryBillsDTO);
 }

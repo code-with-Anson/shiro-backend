@@ -2,6 +2,7 @@ package com.shiro.backend.domain.vo;
 
 import com.shiro.backend.domain.po.Bills;
 import com.shiro.backend.enums.BillType;
+import com.shiro.backend.enums.isDeletedEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -13,7 +14,7 @@ import java.time.LocalDate;
  * 返回给前端的 查询账单 视觉对象
  */
 @Data
-@ApiModel(value = "查询用户被逻辑删除订单-VO实体")
+@ApiModel(value = "查询用户被逻辑删除的账单-VO实体")
 public class IsDeletedBillsVO {
     @ApiModelProperty(value = "账单ID，唯一约束，主键，由后端插入")
     private Long id;
@@ -34,7 +35,7 @@ public class IsDeletedBillsVO {
     private LocalDate date;
 
     @ApiModelProperty(value = "逻辑删除字段，标记是否被删除")
-    private Boolean isDeleted;
+    private isDeletedEnum isDeleted;
 
     /**
      * 将查询到的数据封装为VO

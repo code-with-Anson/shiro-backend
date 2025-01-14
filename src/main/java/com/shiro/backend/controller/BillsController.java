@@ -6,7 +6,7 @@ import com.shiro.backend.domain.dto.DeleteBillsDTO;
 import com.shiro.backend.domain.dto.QueryMonthBillsDTO;
 import com.shiro.backend.domain.dto.UpdateBillsDTO;
 import com.shiro.backend.domain.vo.IsDeletedBillsVO;
-import com.shiro.backend.domain.vo.QueryMonthBillsVO;
+import com.shiro.backend.domain.vo.QueryBillsVO;
 import com.shiro.backend.service.IBillsService;
 import com.shiro.backend.utils.R;
 import io.swagger.annotations.Api;
@@ -39,7 +39,7 @@ public class BillsController {
 
     @ApiOperation("按照年月获取用户账单")
     @PostMapping("/month")
-    public List<QueryMonthBillsVO> queryBills(@RequestBody QueryMonthBillsDTO queryMonthBillsDTO) {
+    public List<QueryBillsVO> queryBills(@RequestBody QueryMonthBillsDTO queryMonthBillsDTO) {
         return billsService.queryBills(queryMonthBillsDTO);
     }
 

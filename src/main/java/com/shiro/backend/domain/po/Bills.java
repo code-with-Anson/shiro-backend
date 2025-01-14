@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.shiro.backend.enums.BillType;
+import com.shiro.backend.enums.isDeletedEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -57,7 +58,7 @@ public class Bills implements Serializable {
 
     @TableLogic
     @ApiModelProperty(value = "逻辑删除字段，标记是否被删除")
-    private Boolean isDeleted;
+    private isDeletedEnum isDeleted;
 
     @ApiModelProperty(value = "记录创建时间")
     private LocalDateTime createdAt;

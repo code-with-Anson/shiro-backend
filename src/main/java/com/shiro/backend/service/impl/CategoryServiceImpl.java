@@ -4,20 +4,19 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.shiro.backend.domain.dto.AddCategoryDTO;
-import com.shiro.backend.domain.dto.DeleteCategoryDTO;
-import com.shiro.backend.domain.dto.PageDTO;
-import com.shiro.backend.domain.dto.QueryCategoryBillsDTO;
+import com.shiro.backend.domain.dto.*;
 import com.shiro.backend.domain.po.Bills;
 import com.shiro.backend.domain.po.Category;
+import com.shiro.backend.domain.vo.QueryBillsVO;
 import com.shiro.backend.domain.vo.QueryCategoryVO;
-import com.shiro.backend.domain.vo.QueryMonthBillsVO;
 import com.shiro.backend.mapper.BillsMapper;
 import com.shiro.backend.mapper.CategoryMapper;
 import com.shiro.backend.mapper.UsersMapper;
 import com.shiro.backend.service.ICategoryService;
 import com.shiro.backend.utils.R;
 import com.shiro.backend.utils.UserContext;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,18 +32,20 @@ import java.util.stream.Collectors;
  * @since 2025-01-12
  */
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> implements ICategoryService {
 
     private final CategoryMapper categoryMapper;
     private final BillsMapper billsMapper;
     private final UsersMapper usersMapper;
 
-    public CategoryServiceImpl(CategoryMapper categoryMapper, BillsMapper billsMapper, UsersMapper usersMapper) {
-        this.categoryMapper = categoryMapper;
-        this.billsMapper = billsMapper;
-        this.usersMapper = usersMapper;
-    }
-
+    /**
+     * 增加新的常规账单分类
+     *
+     * @param addCategoryDTO
+     * @return
+     */
     @Override
     public R<String> addNewCategory(AddCategoryDTO addCategoryDTO) {
         //1.获取当前用户
@@ -57,6 +58,32 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         return R.success("成功添加！");
     }
 
+    /**
+     * 更新常规账单分类
+     *
+     * @param updateCategoryDTO
+     * @return
+     */
+    @Override
+    public R<String> updateCategory(UpdateCategoryDTO updateCategoryDTO) {
+        //1.获取当前登录用户
+        Long userId = UserContext.getUser();
+        //2.构建更新循环分类实体
+        Category category = updateCategoryDTO.toEntity();
+        LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Category::getUserId, userId)
+                .eq(Category::getId, category.getId());
+        //3.执行更新操作
+        categoryMapper.update(category, queryWrapper);
+        return R.success("更新成功");
+    }
+
+    /**
+     * 分页查询常规账单分类
+     *
+     * @param pageDTO
+     * @return
+     */
     @Override
     public IPage<QueryCategoryVO> getCategory(PageDTO pageDTO) {
         //1.获取当前用户
@@ -79,6 +106,12 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         return categoryPage.convert(QueryCategoryVO::toVO);
     }
 
+    /**
+     * 批量删除常规账单分类
+     *
+     * @param deleteCategoryDTO
+     * @return
+     */
     @Override
     @Transactional
     public R<String> deleteCategory(DeleteCategoryDTO deleteCategoryDTO) {
@@ -92,15 +125,24 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
                 thisCategotyBills
                         .stream()
                         .map(Bills::getId).collect(Collectors.toList());
-        //4.批量删除这些账单
-        billsMapper.realDeleteBills(toDeleteBillsIds, UserContext.getUser());
+        if (!toDeleteBillsIds.isEmpty()) {
+            //4.批量删除这些账单
+            log.info("开始删除关联账单, billIds={}", toDeleteBillsIds);
+            billsMapper.realDeleteBills(toDeleteBillsIds, UserContext.getUser());
+        }
         //5.批量删除分类
         categoryMapper.deleteBatchIds(deleteCategoryList);
         return R.success("成功删除");
     }
 
+    /**
+     * 分页查询常规账单分类下的账单
+     *
+     * @param queryCategoryBillsDTO
+     * @return
+     */
     @Override
-    public IPage<QueryMonthBillsVO> queryCategoryBills(QueryCategoryBillsDTO queryCategoryBillsDTO) {
+    public IPage<QueryBillsVO> queryCategoryBills(QueryCategoryBillsDTO queryCategoryBillsDTO) {
         //1.获取要查询的分类id，用户id
         Long userid = UserContext.getUser();
         Long categoryId = queryCategoryBillsDTO.getCategoryId();
@@ -119,6 +161,6 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         Page<Bills> billsPage = billsMapper.selectPage(page, queryWrapper);
 
         // 5. 转换结果
-        return billsPage.convert(QueryMonthBillsVO::toVO);
+        return billsPage.convert(QueryBillsVO::toVO);
     }
 }

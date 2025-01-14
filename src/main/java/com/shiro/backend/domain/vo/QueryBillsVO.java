@@ -2,6 +2,7 @@ package com.shiro.backend.domain.vo;
 
 import com.shiro.backend.domain.po.Bills;
 import com.shiro.backend.enums.BillType;
+import com.shiro.backend.enums.isDeletedEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -14,7 +15,7 @@ import java.time.LocalDate;
  */
 @Data
 @ApiModel(value = "按月份查询账单-VO实体")
-public class QueryMonthBillsVO {
+public class QueryBillsVO {
     @ApiModelProperty(value = "账单ID，唯一约束，主键，由后端插入")
     private Long id;
 
@@ -34,7 +35,7 @@ public class QueryMonthBillsVO {
     private LocalDate date;
 
     @ApiModelProperty(value = "逻辑删除字段，标记是否被删除")
-    private Boolean isDeleted;
+    private isDeletedEnum isDeleted;
 
     /**
      * 将查询到的数据封装为VO
@@ -42,8 +43,8 @@ public class QueryMonthBillsVO {
      * @param bills
      * @return
      */
-    public static QueryMonthBillsVO toVO(Bills bills) {
-        QueryMonthBillsVO vo = new QueryMonthBillsVO();
+    public static QueryBillsVO toVO(Bills bills) {
+        QueryBillsVO vo = new QueryBillsVO();
         vo.setId(bills.getId());
         vo.setAmount(bills.getAmount());
         vo.setType(bills.getType());

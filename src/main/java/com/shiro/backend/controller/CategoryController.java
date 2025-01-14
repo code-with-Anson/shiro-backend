@@ -3,8 +3,8 @@ package com.shiro.backend.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.shiro.backend.domain.dto.*;
+import com.shiro.backend.domain.vo.QueryBillsVO;
 import com.shiro.backend.domain.vo.QueryCategoryVO;
-import com.shiro.backend.domain.vo.QueryMonthBillsVO;
 import com.shiro.backend.service.ICategoryService;
 import com.shiro.backend.utils.R;
 import io.swagger.annotations.Api;
@@ -45,7 +45,7 @@ public class CategoryController {
     @ApiOperation("修改常规账单分类")
     @PostMapping("/update")
     public R<String> updateCategory(@RequestBody UpdateCategoryDTO updateCategoryDTO) {
-        categoryService.updateById(updateCategoryDTO.toEntity());
+        categoryService.updateCategory(updateCategoryDTO);
         return R.success("成功更新！");
     }
 
@@ -57,7 +57,7 @@ public class CategoryController {
 
     @ApiOperation("根据常规账单分类查找账单")
     @PostMapping("/query-bills")
-    public IPage<QueryMonthBillsVO> queryCategoryBills(@RequestBody QueryCategoryBillsDTO queryCategoryBillsDTO) {
+    public IPage<QueryBillsVO> queryCategoryBills(@RequestBody QueryCategoryBillsDTO queryCategoryBillsDTO) {
         return categoryService.queryCategoryBills(queryCategoryBillsDTO);
     }
 }

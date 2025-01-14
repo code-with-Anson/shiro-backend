@@ -7,7 +7,7 @@ import com.shiro.backend.domain.dto.QueryMonthBillsDTO;
 import com.shiro.backend.domain.dto.UpdateBillsDTO;
 import com.shiro.backend.domain.po.Bills;
 import com.shiro.backend.domain.vo.IsDeletedBillsVO;
-import com.shiro.backend.domain.vo.QueryMonthBillsVO;
+import com.shiro.backend.domain.vo.QueryBillsVO;
 import com.shiro.backend.utils.R;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public interface IBillsService extends IService<Bills> {
      * @param queryMonthBillsDTO
      * @return
      */
-    List<QueryMonthBillsVO> queryBills(QueryMonthBillsDTO queryMonthBillsDTO);
+    List<QueryBillsVO> queryBills(QueryMonthBillsDTO queryMonthBillsDTO);
 
 
     /**

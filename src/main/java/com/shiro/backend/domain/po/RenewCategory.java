@@ -44,6 +44,4 @@ public class RenewCategory implements Serializable {
 
     @ApiModelProperty(value = "修改时间，自动更新为当前时间")
     private LocalDateTime updatedAt;
-
-
 }
