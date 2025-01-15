@@ -5,6 +5,7 @@ import com.shiro.backend.exception.BaseException;
 import com.shiro.backend.utils.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -28,6 +29,13 @@ public class GlobalExceptionHandler {
 
     private ResponseEntity<R<Void>> processResponse(BaseException e) {
         return ResponseEntity.status(e.getCode()).body(R.failure(e));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public R<String> HttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        log.error("自定义异常 -> {} , 异常原因：{}  ", e.getClass().getName(), e.getMessage());
+        log.debug("详细异常信息", e);
+        return R.failure(MessageConstant.ARGS_LOCK);
     }
 
 
