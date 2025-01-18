@@ -1,5 +1,6 @@
 package com.shiro.backend.domain.vo;
 
+import com.shiro.backend.enums.Gender;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -18,4 +19,8 @@ public class UsersLoginVO {
     private String email;
     @ApiModelProperty(value = "用户的昵称")
     private String name;
+    @ApiModelProperty(value = "用户性别")
+    private Gender sex;
+    @ApiModelProperty(value = "用户头像地址")
+    private String avatar;
 }

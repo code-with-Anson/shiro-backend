@@ -109,6 +109,8 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
         usersLoginVO.setToken(token);
         usersLoginVO.setEmail(user.getEmail());
         usersLoginVO.setName(user.getName());
+        usersLoginVO.setSex(user.getSex());
+        usersLoginVO.setAvatar(user.getAvatar());
         return usersLoginVO;
     }
 }
