@@ -14,4 +14,8 @@ public class UsersLoginVO {
     private Long userId;
     @ApiModelProperty(value = "生成的token")
     private String token;
+    @ApiModelProperty(value = "用户的邮箱")
+    private String email;
+    @ApiModelProperty(value = "用户的昵称")
+    private String name;
 }
