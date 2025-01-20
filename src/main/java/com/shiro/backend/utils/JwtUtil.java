@@ -51,25 +51,25 @@ public class JwtUtil {
         } catch (Exception e) {
             throw new UnauthorizedException("无效的token", e);
         }
-        // 2.校验jwt是否有效
+        // 3.校验jwt是否有效
         if (!jwt.verify()) {
             // 验证失败
             throw new UnauthorizedException("无效的token");
         }
-        // 3.校验是否过期
+        // 4.校验是否过期
         try {
             JWTValidator.of(jwt).validateDate();
         } catch (ValidateException e) {
             throw new UnauthorizedException("token已经过期");
         }
-        // 4.数据格式校验
+        // 5.数据格式校验
         Object userPayload = jwt.getPayload("userId");
         if (userPayload == null) {
             // 数据为空
             throw new UnauthorizedException("无效的token");
         }
 
-        // 5.数据解析
+        // 6.数据解析
         try {
             return Long.valueOf(userPayload.toString());
         } catch (RuntimeException e) {

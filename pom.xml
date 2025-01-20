@@ -73,7 +73,6 @@
             <artifactId>jsqlparser</artifactId>
             <version>4.9</version>
         </dependency>
-
         <!--Mysql-->
         <dependency>
             <groupId>mysql</groupId>
@@ -122,6 +121,10 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
             <version>5.8.16</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
     </dependencies>
 

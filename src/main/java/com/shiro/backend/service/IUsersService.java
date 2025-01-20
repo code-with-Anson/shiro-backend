@@ -2,9 +2,12 @@ package com.shiro.backend.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.shiro.backend.domain.dto.AddUsersDTO;
+import com.shiro.backend.domain.dto.CodeLoginDTO;
+import com.shiro.backend.domain.dto.ForgetPasswordDTO;
 import com.shiro.backend.domain.dto.LoginFormDTO;
 import com.shiro.backend.domain.po.Users;
 import com.shiro.backend.domain.vo.UsersLoginVO;
+import com.shiro.backend.utils.R;
 
 /**
  * <p>
@@ -20,4 +23,8 @@ public interface IUsersService extends IService<Users> {
     public void saveNewUser(AddUsersDTO addUsersDTO);
 
     UsersLoginVO login(LoginFormDTO loginFormDTO);
+
+    R<String> forget(ForgetPasswordDTO forgetPasswordDTO);
+
+    UsersLoginVO verifyAndLogin(CodeLoginDTO codeLoginDTO);
 }

@@ -6,6 +6,7 @@ public class MessageConstant {
 
     public static final String PASSWORD_ERROR = "密码错误";
     public static final String ACCOUNT_NOT_FOUND = "账号不存在";
+    public static final String CODE_IS_WRONG = "验证码错误或已过期";
     public static final String ACCOUNT_DELETED = "账号被逻辑删除";
     public static final String UNKNOWN_ERROR = "未知错误";
     public static final String USER_NOT_LOGIN = "用户未登录";
@@ -16,3 +17,4 @@ public class MessageConstant {
     public static final String ARGS_WRONG = "方法参数错误";
     public static final String LOGIC_DELETE_FAILED = "逻辑删除失败";
 }
+

@@ -2,6 +2,8 @@ package com.shiro.backend.controller;
 
 
 import com.shiro.backend.domain.dto.AddUsersDTO;
+import com.shiro.backend.domain.dto.CodeLoginDTO;
+import com.shiro.backend.domain.dto.ForgetPasswordDTO;
 import com.shiro.backend.domain.dto.LoginFormDTO;
 import com.shiro.backend.domain.vo.UsersLoginVO;
 import com.shiro.backend.service.IUsersService;
@@ -48,5 +50,16 @@ public class UsersController {
     public UsersLoginVO login(@RequestBody LoginFormDTO loginFormDTO) {
         return usersService.login(loginFormDTO);
     }
-    
+
+    @ApiOperation("用户忘记密码")
+    @PostMapping("/forget")
+    public R<String> forget(@RequestBody ForgetPasswordDTO forgetPasswordDTO) {
+        return usersService.forget(forgetPasswordDTO);
+    }
+
+    @ApiOperation("通过验证码登录")
+    @PostMapping("/code-login")
+    public UsersLoginVO shortTokenLogin(@RequestBody CodeLoginDTO codeLoginDTO) {
+        return usersService.verifyAndLogin(codeLoginDTO);
+    }
 }

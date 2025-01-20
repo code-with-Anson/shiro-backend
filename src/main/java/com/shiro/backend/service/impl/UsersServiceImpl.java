@@ -4,11 +4,14 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.shiro.backend.constant.MessageConstant;
 import com.shiro.backend.domain.dto.AddUsersDTO;
+import com.shiro.backend.domain.dto.CodeLoginDTO;
+import com.shiro.backend.domain.dto.ForgetPasswordDTO;
 import com.shiro.backend.domain.dto.LoginFormDTO;
 import com.shiro.backend.domain.po.Category;
 import com.shiro.backend.domain.po.RenewCategory;
 import com.shiro.backend.domain.po.Users;
 import com.shiro.backend.domain.vo.UsersLoginVO;
+import com.shiro.backend.exception.CodeIsWrongException;
 import com.shiro.backend.exception.EmailExistException;
 import com.shiro.backend.exception.PasswordErrorException;
 import com.shiro.backend.exception.UserNotFoundException;
@@ -17,6 +20,8 @@ import com.shiro.backend.service.ICategoryService;
 import com.shiro.backend.service.IRenewCategoryService;
 import com.shiro.backend.service.IUsersService;
 import com.shiro.backend.utils.JwtUtil;
+import com.shiro.backend.utils.R;
+import com.shiro.backend.utils.VerificationCode.VerificationCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,6 +32,7 @@ import java.time.Duration;
 import java.util.List;
 
 import static com.shiro.backend.constant.MessageConstant.ACCOUNT_NOT_FOUND;
+import static com.shiro.backend.constant.MessageConstant.CODE_IS_WRONG;
 
 /**
  * <p>
@@ -40,13 +46,16 @@ import static com.shiro.backend.constant.MessageConstant.ACCOUNT_NOT_FOUND;
 @RequiredArgsConstructor
 public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements IUsersService {
 
+
     private final UsersMapper usersMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final ICategoryService categoryService;
     private final IRenewCategoryService renewCategoryService;
+    private final VerificationCode verificationCode;
     @Value("${shiro.jwt.secret-expire}")
     private Duration tokenTtl;
+
 
     @Override
     public Users findUsersByEmail(String email) {
@@ -107,6 +116,40 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
         UsersLoginVO usersLoginVO = new UsersLoginVO();
         usersLoginVO.setUserId(user.getId());
         usersLoginVO.setToken(token);
+        usersLoginVO.setEmail(user.getEmail());
+        usersLoginVO.setName(user.getName());
+        usersLoginVO.setSex(user.getSex());
+        usersLoginVO.setAvatar(user.getAvatar());
+        return usersLoginVO;
+    }
+
+
+    @Override
+    public R<String> forget(ForgetPasswordDTO forgetPasswordDTO) {
+        //1.数据校验
+        String email = forgetPasswordDTO.getEmail();
+        //2.确保存在账户
+        Users user = lambdaQuery().eq(Users::getEmail, email).one();
+        if (user == null) {
+            throw new UserNotFoundException(ACCOUNT_NOT_FOUND);
+        }
+        //3.生成验证码
+        verificationCode.generateAndSendCode(email, user.getId());
+        return R.success("验证码已发送到您的邮箱，请查收");
+    }
+
+    @Override
+    public UsersLoginVO verifyAndLogin(CodeLoginDTO codeLoginDTO) {
+        //1.数据校验
+        if (!verificationCode.verifyCode(codeLoginDTO.getEmail(), codeLoginDTO.getCode())) {
+            throw new CodeIsWrongException(CODE_IS_WRONG);
+        }
+        //2.查找用户
+        Users user = lambdaQuery().eq(Users::getEmail, codeLoginDTO.getEmail()).one();
+        //3.封装成VO返回给前端
+        UsersLoginVO usersLoginVO = new UsersLoginVO();
+        usersLoginVO.setUserId(user.getId());
+        usersLoginVO.setToken(jwtUtil.createToken(user.getId(), tokenTtl));
         usersLoginVO.setEmail(user.getEmail());
         usersLoginVO.setName(user.getName());
         usersLoginVO.setSex(user.getSex());

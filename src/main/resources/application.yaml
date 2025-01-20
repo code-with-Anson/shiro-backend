@@ -3,12 +3,27 @@ server:
 spring:
   application:
     name: shiro
+
+  profiles:
+    active: local
+
   datasource:
     url: jdbc:mysql://${db.host}:${db.port}/${db.database}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8
     username: ${db.username}
     password: ${db.password}
-  profiles:
-    active: local
+
+  mail:
+    host: ${email.host}  # 或其他邮件服务器
+    port: ${email.port}
+    username: ${email.username}
+    password: ${email.password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 logging:
   level:
     com:
@@ -59,3 +74,6 @@ shiro:
       - /doc.html
       - /users/register
       - /users/login
+      - /users/forget
+      - /users/code-login
+
