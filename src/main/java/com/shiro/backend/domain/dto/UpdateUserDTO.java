@@ -22,5 +22,5 @@ public class UpdateUserDTO {
     private String email;
 
     @ApiModelProperty(value = "新的头像地址", required = false, example = "1")
-    private String url;
+    private String avatar;
 }

@@ -180,8 +180,8 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
             users.setPassword(passwordEncoder.encode(updateUserDTO.getPassword()));
         }
 
-        if (updateUserDTO.getUrl() != null) {
-            users.setAvatar(updateUserDTO.getUrl());
+        if (updateUserDTO.getAvatar() != null) {
+            users.setAvatar(updateUserDTO.getAvatar());
         }
 
         updateById(users);
