@@ -1,20 +1,15 @@
 package com.shiro.backend.controller;
 
 
-import com.shiro.backend.domain.dto.AddUsersDTO;
-import com.shiro.backend.domain.dto.CodeLoginDTO;
-import com.shiro.backend.domain.dto.ForgetPasswordDTO;
-import com.shiro.backend.domain.dto.LoginFormDTO;
+import com.shiro.backend.domain.dto.*;
+import com.shiro.backend.domain.vo.UsersDetailsVO;
 import com.shiro.backend.domain.vo.UsersLoginVO;
 import com.shiro.backend.service.IUsersService;
 import com.shiro.backend.utils.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -61,5 +56,18 @@ public class UsersController {
     @PostMapping("/code-login")
     public UsersLoginVO shortTokenLogin(@RequestBody CodeLoginDTO codeLoginDTO) {
         return usersService.verifyAndLogin(codeLoginDTO);
+    }
+
+    @ApiOperation("更改用户信息")
+    @PostMapping("/update-user")
+    public UsersDetailsVO updateAvatar(@RequestBody UpdateUserDTO updateUserDTO) {
+        return usersService.updateUser(updateUserDTO);
+    }
+
+
+    @ApiOperation("常规获取用户信息")
+    @GetMapping("/user-info")
+    public UsersDetailsVO userInfo() {
+        return usersService.getUserInfo();
     }
 }

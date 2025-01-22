@@ -3,13 +3,11 @@ package com.shiro.backend.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.shiro.backend.constant.MessageConstant;
-import com.shiro.backend.domain.dto.AddUsersDTO;
-import com.shiro.backend.domain.dto.CodeLoginDTO;
-import com.shiro.backend.domain.dto.ForgetPasswordDTO;
-import com.shiro.backend.domain.dto.LoginFormDTO;
+import com.shiro.backend.domain.dto.*;
 import com.shiro.backend.domain.po.Category;
 import com.shiro.backend.domain.po.RenewCategory;
 import com.shiro.backend.domain.po.Users;
+import com.shiro.backend.domain.vo.UsersDetailsVO;
 import com.shiro.backend.domain.vo.UsersLoginVO;
 import com.shiro.backend.exception.CodeIsWrongException;
 import com.shiro.backend.exception.EmailExistException;
@@ -21,6 +19,7 @@ import com.shiro.backend.service.IRenewCategoryService;
 import com.shiro.backend.service.IUsersService;
 import com.shiro.backend.utils.JwtUtil;
 import com.shiro.backend.utils.R;
+import com.shiro.backend.utils.UserContext;
 import com.shiro.backend.utils.VerificationCode.VerificationCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,8 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.util.List;
 
-import static com.shiro.backend.constant.MessageConstant.ACCOUNT_NOT_FOUND;
-import static com.shiro.backend.constant.MessageConstant.CODE_IS_WRONG;
+import static com.shiro.backend.constant.MessageConstant.*;
 
 /**
  * <p>
@@ -155,5 +153,61 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
         usersLoginVO.setSex(user.getSex());
         usersLoginVO.setAvatar(user.getAvatar());
         return usersLoginVO;
+    }
+
+    @Override
+    public UsersDetailsVO updateUser(UpdateUserDTO updateUserDTO) {
+        Long userId = UserContext.getUser();
+
+        Users findUser = lambdaQuery().eq(Users::getEmail, updateUserDTO.getEmail()).one();
+        if (findUser != null) {
+            throw new UserNotFoundException(EMAIL_EXIST);
+        }
+        Users users = new Users();
+        users.setId(userId);
+        if (updateUserDTO.getName() != null) {
+            users.setName(updateUserDTO.getName());
+        }
+
+        if (updateUserDTO.getEmail() != null) {
+            users.setEmail(updateUserDTO.getEmail());
+        }
+
+        if (updateUserDTO.getSex() != null) {
+            users.setSex(updateUserDTO.getSex());
+        }
+        if (updateUserDTO.getPassword() != null) {
+            users.setPassword(passwordEncoder.encode(updateUserDTO.getPassword()));
+        }
+
+        if (updateUserDTO.getUrl() != null) {
+            users.setAvatar(updateUserDTO.getUrl());
+        }
+
+        updateById(users);
+
+        Users updatedUsers = getById(userId);
+        UsersDetailsVO usersDetailsVO = new UsersDetailsVO();
+        usersDetailsVO.setUserId(updatedUsers.getId());
+        usersDetailsVO.setEmail(updatedUsers.getEmail());
+        usersDetailsVO.setName(updatedUsers.getName());
+        usersDetailsVO.setSex(updatedUsers.getSex());
+        usersDetailsVO.setAvatar(updatedUsers.getAvatar());
+
+        return usersDetailsVO;
+    }
+
+    @Override
+    public UsersDetailsVO getUserInfo() {
+        Long userId = UserContext.getUser();
+        Users users = getById(userId);
+        UsersDetailsVO usersDetailsVO = new UsersDetailsVO();
+        usersDetailsVO.setUserId(users.getId());
+        usersDetailsVO.setEmail(users.getEmail());
+        usersDetailsVO.setName(users.getName());
+        usersDetailsVO.setSex(users.getSex());
+        usersDetailsVO.setAvatar(users.getAvatar());
+
+        return usersDetailsVO;
     }
 }

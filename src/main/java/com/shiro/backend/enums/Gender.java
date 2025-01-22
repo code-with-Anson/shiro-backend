@@ -8,13 +8,13 @@ import lombok.Getter;
 public enum Gender {
     MALE(0, "男"),
     FEMALE(1, "女"),
-    OTHER(2, "其他");
+    OTHER(2, "扫地机器人-爱丽丝");
 
     @EnumValue // 告诉 MyBatis-Plus，枚举类中哪个字段会被映射到数据库中
     private final int value;
     @JsonValue
     private final String description;
-    
+
     Gender(int value, String description) {
         this.value = value;
         this.description = description;

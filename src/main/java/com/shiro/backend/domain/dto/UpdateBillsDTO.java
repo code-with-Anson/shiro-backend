@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
-@ApiModel(value = "更新账单-数据传输对象", description = "用来传输更新账单的属性")
+@ApiModel(value = "更新账单-数据传输对象", description = "用来传输更新常规账单的属性")
 public class UpdateBillsDTO {
     @ApiModelProperty(value = "账单ID，唯一约束，主键，由后端插入", required = true, example = "1878773602640248834")
     private Long id;

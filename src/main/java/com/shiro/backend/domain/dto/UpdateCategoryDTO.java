@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@ApiModel(value = "更新分类-数据传输对象", description = "用来传输更新账单的属性")
+@ApiModel(value = "更新分类-数据传输对象", description = "用来传输更新常规账单分类的属性")
 public class UpdateCategoryDTO {
     @ApiModelProperty(value = "主键，由雪花算法生成", required = true, example = "1")
     private Long id;
