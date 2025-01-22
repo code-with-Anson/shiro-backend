@@ -49,6 +49,7 @@ public class CategoryController {
         return R.success("成功更新！");
     }
 
+    //TODO 之后这里加个redis，如果分类没有改变，就直接让用户拉取redis，避免数据库查询
     @ApiOperation("获取常规账单分类")
     @PostMapping("/query")
     public IPage<QueryCategoryVO> queryCategory(@RequestBody PageDTO pageDTO) {
