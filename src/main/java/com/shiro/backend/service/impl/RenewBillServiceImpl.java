@@ -22,6 +22,8 @@ import com.shiro.backend.service.IRenewBillService;
 import com.shiro.backend.utils.R;
 import com.shiro.backend.utils.UserContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,6 +39,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class RenewBillServiceImpl extends ServiceImpl<RenewBillMapper, RenewBill> implements IRenewBillService {
+    // 定义缓存的命名空间，方便管理
+    private static final String CACHE_NAMESPACE = "renewbill";
     private final RenewCategoryMapper renewCategoryMapper;
     private final RenewBillMapper renewBillMapper;
 
@@ -47,6 +51,8 @@ public class RenewBillServiceImpl extends ServiceImpl<RenewBillMapper, RenewBill
      * @return
      */
     @Override
+    @CacheEvict(value = CACHE_NAMESPACE,
+            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':page:*'")
     public R<String> saveRenewBill(AddRenewBillDTO addRenewBillDTO) {
         //1.获取当前登录用户
         Long userId = UserContext.getUser();
@@ -74,6 +80,10 @@ public class RenewBillServiceImpl extends ServiceImpl<RenewBillMapper, RenewBill
      * @return
      */
     @Override
+    @Cacheable(value = CACHE_NAMESPACE,
+            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':page:' + #pageDTO.currentPage + ':' + #pageDTO.pageSize",
+            unless = "#result == null || #result.getRecords().isEmpty()"
+    )
     public IPage<QueryRenewBillVO> queryRenewBill(PageDTO pageDTO) {
         //1.获取当前登录用户
         Long userId = UserContext.getUser();
@@ -98,6 +108,8 @@ public class RenewBillServiceImpl extends ServiceImpl<RenewBillMapper, RenewBill
      * @return
      */
     @Override
+    @CacheEvict(value = CACHE_NAMESPACE,
+            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':page:*'")
     public R<String> updateRenewBill(UpdateRenewBillDTO updateRenewBillDTO) {
         //1.获取当前登录用户
         Long userId = UserContext.getUser();
@@ -110,7 +122,7 @@ public class RenewBillServiceImpl extends ServiceImpl<RenewBillMapper, RenewBill
                 .eq(RenewBill::getId, renewBill.getId());
         //4.更新循环账单
         renewBillMapper.update(renewBill, queryWrapper);
-        return R.failure("更新成功！");
+        return R.success("更新成功！");
     }
 
     /**
@@ -120,6 +132,8 @@ public class RenewBillServiceImpl extends ServiceImpl<RenewBillMapper, RenewBill
      * @return
      */
     @Override
+    @CacheEvict(value = CACHE_NAMESPACE,
+            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':page:*'")
     public R<String> logicDeleteRenewBill(DeleteRenewBillDTO deleteRenewBillDTO) {
         //1.获取当前登录用户
         Long userId = UserContext.getUser();
@@ -142,6 +156,8 @@ public class RenewBillServiceImpl extends ServiceImpl<RenewBillMapper, RenewBill
      * @return
      */
     @Override
+    @CacheEvict(value = CACHE_NAMESPACE,
+            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':page:*'")
     public R<String> recoverRenewBill(DeleteRenewBillDTO deleteRenewBillDTO) {
         //1.获取当前登录用户
         Long userId = UserContext.getUser();
@@ -192,6 +208,8 @@ public class RenewBillServiceImpl extends ServiceImpl<RenewBillMapper, RenewBill
      * @return
      */
     @Override
+    @CacheEvict(value = CACHE_NAMESPACE,
+            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':page:*'")
     public R<String> realDeleteRenewBill(DeleteRenewBillDTO deleteRenewBillDTO) {
         //1.获取当前登录用户
         Long userId = UserContext.getUser();

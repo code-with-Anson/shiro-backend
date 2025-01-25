@@ -24,6 +24,19 @@ spring:
           starttls:
             enable: true
 
+  redis:
+    host: ${redis.host}
+    port: ${redis.port}
+    password: ${redis.password}
+    database: ${redis.database}
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000
+      cache-null-values: true
+      key-prefix: "shiro:"    # 添加应用级别的缓存前缀
+      use-key-prefix: true    # 启用缓存前缀
+
 logging:
   level:
     com:

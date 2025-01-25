@@ -6,12 +6,14 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 查找用户拥有的常规账单分类
  */
 @Data
 @ApiModel(value = "按照用户id查找分类-视觉传输实体")
-public class QueryCategoryVO {
+public class QueryCategoryVO implements Serializable {
 
     @ApiModelProperty(value = "按照用户id查找分类-视觉传输实体-分类id")
     private Long id;

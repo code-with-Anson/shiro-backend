@@ -5,12 +5,14 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 返回给前端的 用户登录 视觉对象
  */
 @Data
 @ApiModel(value = "用户登录-VO实体")
-public class UsersLoginVO {
+public class UsersLoginVO implements Serializable {
     @ApiModelProperty(value = "用户ID")
     private Long userId;
     @ApiModelProperty(value = "生成的token")

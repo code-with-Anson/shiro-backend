@@ -17,6 +17,8 @@ import com.shiro.backend.utils.R;
 import com.shiro.backend.utils.UserContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +37,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> implements ICategoryService {
-
+    // 定义缓存的命名空间，方便管理
+    private static final String CACHE_NAMESPACE = "categories";
     private final CategoryMapper categoryMapper;
     private final BillsMapper billsMapper;
     private final UsersMapper usersMapper;
@@ -47,6 +50,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
      * @return
      */
     @Override
+    @CacheEvict(value = CACHE_NAMESPACE, allEntries = true)
     public R<String> addNewCategory(AddCategoryDTO addCategoryDTO) {
         //1.获取当前用户
         Long userId = UserContext.getUser();
@@ -65,6 +69,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
      * @return
      */
     @Override
+    @CacheEvict(value = CACHE_NAMESPACE, allEntries = true)
     public R<String> updateCategory(UpdateCategoryDTO updateCategoryDTO) {
         //1.获取当前登录用户
         Long userId = UserContext.getUser();
@@ -85,6 +90,11 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
      * @return
      */
     @Override
+    @Cacheable(
+            value = CACHE_NAMESPACE,
+            key = "T(com.shiro.backend.utils.UserContext).getUser()+':'+':page'+#pageDTO.currentPage+':'+#pageDTO.pageSize",
+            unless = "#result == null || #result.getRecords().isEmpty()"
+    )
     public IPage<QueryCategoryVO> getCategory(PageDTO pageDTO) {
         //1.获取当前用户
         Long userId = UserContext.getUser();
@@ -113,6 +123,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
      * @return
      */
     @Override
+    @CacheEvict(value = CACHE_NAMESPACE, allEntries = true)
     @Transactional
     public R<String> deleteCategory(DeleteCategoryDTO deleteCategoryDTO) {
         //1.拿到需要删除的分类对应的id

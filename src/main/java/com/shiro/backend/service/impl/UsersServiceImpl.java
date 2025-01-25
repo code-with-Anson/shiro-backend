@@ -25,6 +25,8 @@ import com.shiro.backend.utils.UserContext;
 import com.shiro.backend.utils.VerificationCode.VerificationCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,7 +49,8 @@ import static com.shiro.backend.enums.Gender.OTHER;
 @RequiredArgsConstructor
 public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements IUsersService {
 
-
+    // 定义缓存的命名空间，方便管理
+    private static final String CACHE_NAMESPACE = "userinfo";
     private final UsersMapper usersMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
@@ -178,6 +181,8 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
         return usersLoginVO;
     }
 
+    @CacheEvict(value = CACHE_NAMESPACE,
+            key = "T(com.shiro.backend.utils.UserContext).getUser()")
     @Override
     public UsersDetailsVO updateUser(UpdateUserDTO updateUserDTO) {
         Long userId = UserContext.getUser();
@@ -220,6 +225,9 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
         return usersDetailsVO;
     }
 
+    @Cacheable(value = CACHE_NAMESPACE,
+            key = "T(com.shiro.backend.utils.UserContext).getUser()",
+            unless = "#result == null")
     @Override
     public UsersDetailsVO getUserInfo() {
         Long userId = UserContext.getUser();

@@ -5,12 +5,14 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 返回给前端的 常规获取用户信息 视觉对象
  */
 @Data
 @ApiModel(value = "常规获取用户信息-VO实体")
-public class UsersDetailsVO {
+public class UsersDetailsVO implements Serializable {
     @ApiModelProperty(value = "用户ID")
     private Long userId;
     @ApiModelProperty(value = "用户的邮箱")

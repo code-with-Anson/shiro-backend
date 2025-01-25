@@ -20,6 +20,9 @@ import com.shiro.backend.service.IBillsService;
 import com.shiro.backend.utils.R;
 import com.shiro.backend.utils.UserContext;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -35,7 +38,10 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 @Service
+@Slf4j  // 添加日志支持，方便观察缓存行为
 public class BillsServiceImpl extends ServiceImpl<BillsMapper, Bills> implements IBillsService {
+    // 定义缓存的命名空间，方便管理
+    private static final String CACHE_NAMESPACE = "bills";
     private final CategoryMapper categoryMapper;
     private final BillsMapper billsMapper;
 
@@ -45,6 +51,7 @@ public class BillsServiceImpl extends ServiceImpl<BillsMapper, Bills> implements
      * @param addBillsDTO
      */
     @Override
+    @CacheEvict(value = CACHE_NAMESPACE, key = "T(com.shiro.backend.utils.UserContext).getUser()  + ':' + #addBillsDTO.date.year + '-' + #addBillsDTO.date.monthValue")
     public R<String> saveBills(AddBillsDTO addBillsDTO) {
         //1.获取当前登录用户
         Long userId = UserContext.getUser();
@@ -72,6 +79,11 @@ public class BillsServiceImpl extends ServiceImpl<BillsMapper, Bills> implements
      * @return
      */
     @Override
+    @Cacheable(
+            value = CACHE_NAMESPACE,
+            key = "T(com.shiro.backend.utils.UserContext).getUser()  + ':' + #queryMonthBillsDTO.year + '-' + #queryMonthBillsDTO.month",
+            unless = "#result == null || #result.isEmpty()"
+    )
     public List<QueryBillsVO> queryBills(QueryMonthBillsDTO queryMonthBillsDTO) {
         //1.获取要查询的年份，月份，用户id
         int year = queryMonthBillsDTO.getYear();
@@ -96,6 +108,7 @@ public class BillsServiceImpl extends ServiceImpl<BillsMapper, Bills> implements
      * @return
      */
     @Override
+    @CacheEvict(value = CACHE_NAMESPACE, key = "T(com.shiro.backend.utils.UserContext).getUser() + ':' + #updateBillsDTO.date.year + '-' + #updateBillsDTO.date.monthValue")
     public R<String> updateBills(UpdateBillsDTO updateBillsDTO) {
         Long userId = UserContext.getUser();
         Bills newBill = updateBillsDTO.toEntity();
@@ -114,6 +127,7 @@ public class BillsServiceImpl extends ServiceImpl<BillsMapper, Bills> implements
      * @return
      */
     @Override
+    @CacheEvict(value = CACHE_NAMESPACE, key = "T(com.shiro.backend.utils.UserContext).getUser() + ':' + #updateBillsDTO.date.year + '-' + #updateBillsDTO.date.monthValue")
     public R<String> logicDeleteBills(DeleteBillsDTO deleteBillsDTO) {
         Long userId = UserContext.getUser();
         LambdaQueryWrapper<Bills> queryWrapper = new LambdaQueryWrapper<>();
@@ -134,6 +148,7 @@ public class BillsServiceImpl extends ServiceImpl<BillsMapper, Bills> implements
      * @return
      */
     @Override
+    @CacheEvict(value = CACHE_NAMESPACE, key = "T(com.shiro.backend.utils.UserContext).getUser() + ':' + #updateBillsDTO.date.year + '-' + #updateBillsDTO.date.monthValue")
     public R<String> recoverBills(DeleteBillsDTO deleteBillsDTO) {
         Long userId = UserContext.getUser();
         billsMapper.recoverLogicDeletedBills(isDeletedEnum.isDeleted, isDeletedEnum.notDeleted, deleteBillsDTO.getBill_ids());
@@ -182,8 +197,10 @@ public class BillsServiceImpl extends ServiceImpl<BillsMapper, Bills> implements
      * @return
      */
     @Override
+    @CacheEvict(value = {CACHE_NAMESPACE, CACHE_NAMESPACE + ":deleted"}, allEntries = true)
     public R<String> realDeleteBills(DeleteBillsDTO deleteBillsDTO) {
         Long userId = UserContext.getUser();
+        log.info("物理删除账单: userId={}, billIds={}", UserContext.getUser(), deleteBillsDTO.getBill_ids());
         billsMapper.realDeleteBills(deleteBillsDTO.getBill_ids(), userId);
         return R.success("删除成功");
     }

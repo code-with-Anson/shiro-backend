@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -15,7 +16,7 @@ import java.time.LocalDate;
  */
 @Data
 @ApiModel(value = "查询用户被逻辑删除的账单-VO实体")
-public class IsDeletedBillsVO {
+public class IsDeletedBillsVO implements Serializable {
     @ApiModelProperty(value = "账单ID，唯一约束，主键，由后端插入")
     private Long id;
 

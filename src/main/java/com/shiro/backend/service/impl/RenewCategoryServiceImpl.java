@@ -18,6 +18,8 @@ import com.shiro.backend.utils.R;
 import com.shiro.backend.utils.UserContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +38,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class RenewCategoryServiceImpl extends ServiceImpl<RenewCategoryMapper, RenewCategory> implements IRenewCategoryService {
+    // 定义缓存的命名空间，方便管理
+    private static final String CACHE_NAMESPACE = "renewcategory";
     private final RenewBillMapper renewBillMapper;
     private final RenewCategoryMapper renewCategoryMapper;
 
@@ -46,6 +50,8 @@ public class RenewCategoryServiceImpl extends ServiceImpl<RenewCategoryMapper, R
      * @return
      */
     @Override
+    @CacheEvict(value = CACHE_NAMESPACE,
+            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':page:*'")
     public R<String> addNewRenewCategory(AddRenewCategoryDTO addRenewCategoryDTO) {
         //1.获取当前用户
         Long userId = UserContext.getUser();
@@ -64,6 +70,8 @@ public class RenewCategoryServiceImpl extends ServiceImpl<RenewCategoryMapper, R
      * @return
      */
     @Override
+    @CacheEvict(value = CACHE_NAMESPACE,
+            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':page:*'")
     public R<String> updateRenewCategory(UpdateRenewCategoryDTO updateRenewCategoryDTO) {
         //1.获取当前登录用户
         Long userId = UserContext.getUser();
@@ -84,6 +92,8 @@ public class RenewCategoryServiceImpl extends ServiceImpl<RenewCategoryMapper, R
      * @return
      */
     @Override
+    @CacheEvict(value = CACHE_NAMESPACE,
+            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':page:*'")
     @Transactional
     public R<String> deleteRenewCategory(DeleteRenewCategoryDTO deleteRenewCategoryDTO) {
         //1.拿到需要删除的分类对应的id
@@ -121,6 +131,9 @@ public class RenewCategoryServiceImpl extends ServiceImpl<RenewCategoryMapper, R
      * @return
      */
     @Override
+    @Cacheable(value = CACHE_NAMESPACE,
+            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':page:' + #pageDTO.currentPage + ':' + #pageDTO.pageSize",
+            unless = "#result == null || #result.getRecords().isEmpty()")
     public IPage<QueryRenewCategoryVO> getRenewCategory(PageDTO pageDTO) {
         //1.获取当前用户
         Long userId = UserContext.getUser();
