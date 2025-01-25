@@ -34,8 +34,8 @@ public class Bills implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "账单ID，唯一约束，主键，由后端插入")
-    @TableId(value = "id", type = IdType.ASSIGN_ID)
+    @ApiModelProperty(value = "账单ID，自增，主键")
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     @ApiModelProperty(value = "用户ID，外键，关联user表的id")

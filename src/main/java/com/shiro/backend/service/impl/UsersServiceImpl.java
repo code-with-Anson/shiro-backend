@@ -31,6 +31,7 @@ import java.time.Duration;
 import java.util.List;
 
 import static com.shiro.backend.constant.MessageConstant.*;
+import static com.shiro.backend.enums.Gender.OTHER;
 
 /**
  * <p>
@@ -53,6 +54,8 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
     private final VerificationCode verificationCode;
     @Value("${shiro.jwt.secret-expire}")
     private Duration tokenTtl;
+    @Value("${user.default-category}")
+    private String defaultCategory;
 
 
     @Override
@@ -78,6 +81,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
         if (!usersList.isEmpty()) {
             throw new EmailExistException(MessageConstant.EMAIL_EXIST);
         }
+        user.setSex(OTHER);
         //5.插入新用户
         save(user);
 
@@ -86,9 +90,9 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
         RenewCategory renewCategory = new RenewCategory();
 
         category.setUserId(user.getId());
-        category.setName("汐落");
+        category.setName(defaultCategory);
         renewCategory.setUserId(user.getId());
-        renewCategory.setName("汐落");
+        renewCategory.setName(defaultCategory);
 
         categoryService.save(category);
         renewCategoryService.save(renewCategory);

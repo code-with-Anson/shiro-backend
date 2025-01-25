@@ -25,7 +25,7 @@ import java.util.List;
  * @author Anson
  * @since 2025-01-07
  */
-@Api(tags = "账单相关接口")
+@Api(tags = "常规账单相关接口")
 @RestController
 @RequestMapping("/bills")
 @RequiredArgsConstructor

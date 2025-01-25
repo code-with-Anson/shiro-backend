@@ -59,6 +59,7 @@ knife4j:
 
 user:
   default-avatar: ${user.avatar-url}
+  default-category: ${user.default-category}
 
 shiro:
   jwt:

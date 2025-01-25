@@ -32,7 +32,7 @@ public class Users implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "用户ID，唯一约束，由MybatisPlus使用雪花算法生成")
+    @ApiModelProperty(value = "用户ID，主键，是项目中唯一一个由MybatisPlus使用雪花算法生成的id属性，其他都是自增")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 

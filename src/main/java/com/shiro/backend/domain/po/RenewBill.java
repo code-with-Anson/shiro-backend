@@ -35,8 +35,8 @@ public class RenewBill implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "周期计费记录ID，主键，由后端生成")
-    @TableId(value = "id", type = IdType.ASSIGN_ID)
+    @ApiModelProperty(value = "周期计费记录ID，主键，自增")
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     @ApiModelProperty(value = "循环账单关联的用户id")

@@ -44,8 +44,176 @@ Shiro是软件的英文名，汐落是软件的中文名，下文中统一使用
 
 ## 技术选型
 
-后端使用了Springboot2.7 + MybatisPlus + Knife4j(openapi2版本)
+后端使用了Springboot2.7 + MybatisPlus + Knife4j(openapi2版本) + MySQL
 
-## 待补充
+**（后期会加SpringCache和Redis用来管理邮箱验证码和数据缓存）**
 
----
+
+
+## 数据库创建
+
+```sql
+CREATE DATABASE `shiro_local` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+```
+
+### users:
+
+```sql
+-- shiro_local.users definition
+
+CREATE TABLE `users` (
+  `id` bigint NOT NULL COMMENT '用户ID，主键，是项目中唯一一个由MybatisPlus使用雪花算法生成的id属性，其他都是自增',
+  `name` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '昵称，1到10个字符',
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '加密后的密码',
+  `sex` int NOT NULL DEFAULT '2' COMMENT '性别，0是男性，1是女性，预留扩展数值支持其他选项',
+  `email` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用于存放用户的邮箱，邮箱是用户登录以及找回密码的重要凭据',
+  `avatar` varchar(2048) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'https://shiro-1305030750.cos.ap-shanghai.myqcloud.com/15.jpg' COMMENT '用户头像URL，默认URL由后端管理',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '逻辑删除字段，标记是否被删除',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户表';
+```
+
+### bills：
+
+```sql
+-- shiro_local.bills definition
+
+CREATE TABLE `bills` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '账单ID，自增，主键',
+  `userid` bigint NOT NULL COMMENT '用户ID，外键，关联user表的id',
+  `amount` decimal(10,2) NOT NULL COMMENT '金额，可以为正数或负数',
+  `type` int NOT NULL COMMENT '账单类型，收入或支出，使用整数表示',
+  `category_id` bigint NOT NULL COMMENT '交易分类ID，用来记录交易的分类',
+  `detail` text COLLATE utf8mb4_unicode_ci COMMENT '消费详情，可为空，用于记录备注信息',
+  `date` date NOT NULL COMMENT '账单日期，精确到年月日，由用户前端输入',
+  `is_deleted` int NOT NULL DEFAULT '0' COMMENT '逻辑删除字段，标记是否被删除',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录更新时间',
+  PRIMARY KEY (`id`),
+  KEY `userid` (`userid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='账单记录表';
+```
+
+### category
+```sql
+-- shiro_local.category definition
+
+CREATE TABLE `category` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键，自增',
+  `name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '分类的名称',
+  `user_id` bigint NOT NULL COMMENT '外键，用于关联users表单的id',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间，默认当前时间',
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间，自动更新为当前时间',
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='账单分类表';
+```
+
+### renew_bill
+```sql
+-- shiro_local.renew_bill definition
+
+CREATE TABLE `renew_bill` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '周期计费记录ID，主键，自增',
+  `user_id` bigint NOT NULL COMMENT '循环账单关联的用户id',
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '周期计费商品名称',
+  `details` text COLLATE utf8mb4_unicode_ci COMMENT '周期计费商品备注',
+  `category_id` bigint NOT NULL COMMENT '循环计费商品分类ID，用来记录对应的分类',
+  `cycle` int NOT NULL COMMENT '计费周期，数字含义由前端解析',
+  `beginning` date NOT NULL COMMENT '循环付费开始时间',
+  `ending` date NOT NULL COMMENT '循环付费结束时间',
+  `renew` int NOT NULL DEFAULT '0' COMMENT '是否自动续费，数字含义由前端解析',
+  `cost` decimal(10,2) NOT NULL COMMENT '周期计费的费用',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '逻辑删除字段，标记是否被删除',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='周期计费表，存储循环计费信息';
+```
+
+### renew_category
+```sql
+-- shiro_local.renew_category definition
+
+CREATE TABLE `renew_category` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键，自增',
+  `name` varchar(10) NOT NULL COMMENT '分类名称',
+  `user_id` bigint NOT NULL COMMENT '外键，关联users表的id',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间，默认当前时间',
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间，自动更新为当前时间',
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='循环付费账单分类表';
+```
+
+
+### images
+```sql
+-- shiro_local.images definition
+
+CREATE TABLE `images` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '图片ID，主键，自增',
+  `bill_id` bigint DEFAULT NULL COMMENT '关联账单表的ID，外键，可以为空',
+  `renew_id` bigint DEFAULT NULL COMMENT '关联周期计费表的ID，外键，可以为空',
+  `url` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '图片地址，存储后端返回的URL',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '逻辑删除字段，标记是否被删除',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录更新时间',
+  PRIMARY KEY (`id`),
+  KEY `bill_id` (`bill_id`),
+  KEY `renew_id` (`renew_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='图片表，存储账单或周期计费相关的图片附件';
+```
+
+### 外键配置：
+
+tips:
+
+这里会先进行外键检查和删除，删除的时候因为还没有创建外键所以会报错，跳过就可以，没有问题的
+
+```sql
+-- 先查看外键约束
+SELECT CONSTRAINT_NAME 
+FROM information_schema.TABLE_CONSTRAINTS 
+WHERE TABLE_SCHEMA = 'shiro_local' 
+AND TABLE_NAME = '表名' 
+AND CONSTRAINT_TYPE = 'FOREIGN KEY';
+
+-- 然后删除现有的外键约束
+ALTER TABLE bills DROP FOREIGN KEY fk_bills_users;
+ALTER TABLE bills DROP FOREIGN KEY fk_bills_category;
+ALTER TABLE category DROP FOREIGN KEY fk_category_users;
+ALTER TABLE renew_category DROP FOREIGN KEY fk_renew_category_users;
+ALTER TABLE renew_bill DROP FOREIGN KEY fk_renew_bill_users;
+ALTER TABLE renew_bill DROP FOREIGN KEY fk_renew_bill_category;
+ALTER TABLE images DROP FOREIGN KEY fk_images_bills;
+ALTER TABLE images DROP FOREIGN KEY fk_images_renew;
+
+-- 添加新的外键约束（带有级联删除）
+ALTER TABLE category ADD CONSTRAINT fk_category_users 
+FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE renew_category ADD CONSTRAINT fk_renew_category_users 
+FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE bills ADD CONSTRAINT fk_bills_users 
+FOREIGN KEY (userid) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE renew_bill ADD CONSTRAINT fk_renew_bill_users 
+FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE bills ADD CONSTRAINT fk_bills_category 
+FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE CASCADE;
+
+ALTER TABLE renew_bill ADD CONSTRAINT fk_renew_bill_category 
+FOREIGN KEY (category_id) REFERENCES renew_category(id) ON DELETE CASCADE;
+
+ALTER TABLE images ADD CONSTRAINT fk_images_bills 
+FOREIGN KEY (bill_id) REFERENCES bills(id) ON DELETE CASCADE;
+
+ALTER TABLE images ADD CONSTRAINT fk_images_renew 
+FOREIGN KEY (renew_id) REFERENCES renew_bill(id) ON DELETE CASCADE;
+```
