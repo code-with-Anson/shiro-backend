@@ -1,6 +1,7 @@
 package com.shiro.backend.domain.dto;
 
 import com.shiro.backend.domain.po.Category;
+import com.shiro.backend.enums.CategoryType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -14,10 +15,15 @@ public class UpdateCategoryDTO {
     @ApiModelProperty(value = "分类的名称", required = true, example = "Kei酱很可爱")
     private String name;
 
+    @ApiModelProperty(value = "分类的类型", required = true, example = "支出")
+    private CategoryType categoryType;
+
+
     public Category toEntity() {
         Category category = new Category();
         category.setId(id);
         category.setName(name);
+        category.setCategoryType(this.categoryType);
         return category;
     }
 }

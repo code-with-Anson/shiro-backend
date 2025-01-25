@@ -3,6 +3,7 @@ package com.shiro.backend.domain.po;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.shiro.backend.enums.CategoryType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -36,6 +37,9 @@ public class Category implements Serializable {
     @ApiModelProperty(value = "分类的名称")
     private String name;
 
+    @ApiModelProperty(value = "分类类型，属于支出还是收入")
+    private CategoryType categoryType;
+
     @ApiModelProperty(value = "外键，用于关联users表单的id")
     private Long userId;
 
@@ -44,4 +48,6 @@ public class Category implements Serializable {
 
     @ApiModelProperty(value = "修改时间，自动更新为当前时间")
     private LocalDateTime updatedAt;
+
+
 }

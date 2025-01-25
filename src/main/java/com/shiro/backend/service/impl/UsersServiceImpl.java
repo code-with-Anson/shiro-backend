@@ -2,6 +2,7 @@ package com.shiro.backend.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.shiro.backend.config.DefaultCategories;
 import com.shiro.backend.constant.MessageConstant;
 import com.shiro.backend.domain.dto.*;
 import com.shiro.backend.domain.po.Category;
@@ -9,6 +10,7 @@ import com.shiro.backend.domain.po.RenewCategory;
 import com.shiro.backend.domain.po.Users;
 import com.shiro.backend.domain.vo.UsersDetailsVO;
 import com.shiro.backend.domain.vo.UsersLoginVO;
+import com.shiro.backend.enums.CategoryType;
 import com.shiro.backend.exception.CodeIsWrongException;
 import com.shiro.backend.exception.EmailExistException;
 import com.shiro.backend.exception.PasswordErrorException;
@@ -52,10 +54,11 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
     private final ICategoryService categoryService;
     private final IRenewCategoryService renewCategoryService;
     private final VerificationCode verificationCode;
+    private final DefaultCategories defaultCategories;
     @Value("${shiro.jwt.secret-expire}")
     private Duration tokenTtl;
-    @Value("${user.default-category}")
-    private String defaultCategory;
+    @Value("${user.default-renew-category}")
+    private String defaultRenewCategory;
 
 
     @Override
@@ -69,32 +72,48 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
     @Override
     @Transactional
     public void saveNewUser(AddUsersDTO addUsersDTO) {
-        //1.将得到的DTO数据传输对象转换为实体
+        // 1. 将DTO转换为实体并设置密码加密
         Users user = addUsersDTO.toEntity();
         user.setPassword(passwordEncoder.encode(addUsersDTO.getPassword()));
-        //2.构造自定义查询wrapper
+
+        // 2. 检查邮箱是否已存在
         LambdaQueryWrapper<Users> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Users::getEmail, addUsersDTO.getEmail());
-        //3.收集查询到的数据
         List<Users> usersList = usersMapper.selectList(queryWrapper);
-        //4.如果已经存在当前邮箱则抛出异常
         if (!usersList.isEmpty()) {
             throw new EmailExistException(MessageConstant.EMAIL_EXIST);
         }
+
+        // 3. 设置默认性别并保存用户
         user.setSex(OTHER);
-        //5.插入新用户
         save(user);
 
-        //6.给新用户创建默认的常规账单分类和循环账单分类
-        Category category = new Category();
+        // 4. 批量创建支出分类
+        for (DefaultCategories.CategoryConfig config : defaultCategories.getExpense()) {
+            Category category = new Category();
+            category.setUserId(user.getId());
+            category.setName(config.getName());
+            category.setCategoryType(CategoryType.EXPENSE);
+            // 暂时不做排序
+            // category.setSort(config.getSort());
+            categoryService.save(category);
+        }
+
+        // 5. 批量创建收入分类
+        for (DefaultCategories.CategoryConfig config : defaultCategories.getIncome()) {
+            Category category = new Category();
+            category.setUserId(user.getId());
+            category.setName(config.getName());
+            category.setCategoryType(CategoryType.INCOME);
+            // 暂时不做排序
+            // category.setSort(config.getSort());
+            categoryService.save(category);
+        }
+
+        // 6. 创建默认的循环账单分类
         RenewCategory renewCategory = new RenewCategory();
-
-        category.setUserId(user.getId());
-        category.setName(defaultCategory);
         renewCategory.setUserId(user.getId());
-        renewCategory.setName(defaultCategory);
-
-        categoryService.save(category);
+        renewCategory.setName(defaultRenewCategory);
         renewCategoryService.save(renewCategory);
     }
 

@@ -59,8 +59,7 @@ knife4j:
 
 user:
   default-avatar: ${user.avatar-url}
-  default-category: ${user.default-category}
-
+  default-renew-category: ${user.default-renew-category}}
 shiro:
   jwt:
     # 设置jwt签名加密时使用的秘钥
@@ -78,3 +77,34 @@ shiro:
       - /users/forget
       - /users/code-login
 
+
+bill:
+  category:
+    expense:
+      - name: "餐饮"
+        sort: 1
+      - name: "交通"
+        sort: 2
+      - name: "购物"
+        sort: 3
+      - name: "生活"
+        sort: 4
+      - name: "娱乐"
+        sort: 5
+      - name: "医疗"
+        sort: 6
+      - name: "教育"
+        sort: 7
+      - name: "其他支出"
+        sort: 8
+    income:
+      - name: "工资"
+        sort: 1
+      - name: "奖金"
+        sort: 2
+      - name: "理财"
+        sort: 3
+      - name: "红包"
+        sort: 4
+      - name: "其他收入"
+        sort: 5
