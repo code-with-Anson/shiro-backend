@@ -51,7 +51,7 @@ public class RenewCategoryServiceImpl extends ServiceImpl<RenewCategoryMapper, R
      */
     @Override
     @CacheEvict(value = CACHE_NAMESPACE,
-            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':page:*'")
+            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':renewCategoryList'")
     public R<String> addNewRenewCategory(AddRenewCategoryDTO addRenewCategoryDTO) {
         //1.获取当前用户
         Long userId = UserContext.getUser();
@@ -71,7 +71,7 @@ public class RenewCategoryServiceImpl extends ServiceImpl<RenewCategoryMapper, R
      */
     @Override
     @CacheEvict(value = CACHE_NAMESPACE,
-            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':page:*'")
+            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':renewCategoryList'")
     public R<String> updateRenewCategory(UpdateRenewCategoryDTO updateRenewCategoryDTO) {
         //1.获取当前登录用户
         Long userId = UserContext.getUser();
@@ -93,7 +93,7 @@ public class RenewCategoryServiceImpl extends ServiceImpl<RenewCategoryMapper, R
      */
     @Override
     @CacheEvict(value = CACHE_NAMESPACE,
-            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':page:*'")
+            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':renewCategoryList'")
     @Transactional
     public R<String> deleteRenewCategory(DeleteRenewCategoryDTO deleteRenewCategoryDTO) {
         //1.拿到需要删除的分类对应的id
@@ -132,7 +132,7 @@ public class RenewCategoryServiceImpl extends ServiceImpl<RenewCategoryMapper, R
      */
     @Override
     @Cacheable(value = CACHE_NAMESPACE,
-            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':page:' + #pageDTO.currentPage + ':' + #pageDTO.pageSize",
+            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':renewCategoryList'",
             unless = "#result == null || #result.getRecords().isEmpty()")
     public IPage<QueryRenewCategoryVO> getRenewCategory(PageDTO pageDTO) {
         //1.获取当前用户
