@@ -52,7 +52,7 @@ public class RenewBillServiceImpl extends ServiceImpl<RenewBillMapper, RenewBill
      */
     @Override
     @CacheEvict(value = CACHE_NAMESPACE,
-            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':page:*'")
+            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':renewBillList'")
     public R<String> saveRenewBill(AddRenewBillDTO addRenewBillDTO) {
         //1.获取当前登录用户
         Long userId = UserContext.getUser();
@@ -81,7 +81,7 @@ public class RenewBillServiceImpl extends ServiceImpl<RenewBillMapper, RenewBill
      */
     @Override
     @Cacheable(value = CACHE_NAMESPACE,
-            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':page:' + #pageDTO.currentPage + ':' + #pageDTO.pageSize",
+            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':renewBillList'",
             unless = "#result == null || #result.getRecords().isEmpty()"
     )
     public IPage<QueryRenewBillVO> queryRenewBill(PageDTO pageDTO) {
@@ -109,7 +109,7 @@ public class RenewBillServiceImpl extends ServiceImpl<RenewBillMapper, RenewBill
      */
     @Override
     @CacheEvict(value = CACHE_NAMESPACE,
-            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':page:*'")
+            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':renewBillList'")
     public R<String> updateRenewBill(UpdateRenewBillDTO updateRenewBillDTO) {
         //1.获取当前登录用户
         Long userId = UserContext.getUser();
@@ -133,7 +133,7 @@ public class RenewBillServiceImpl extends ServiceImpl<RenewBillMapper, RenewBill
      */
     @Override
     @CacheEvict(value = CACHE_NAMESPACE,
-            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':page:*'")
+            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':renewBillList'")
     public R<String> logicDeleteRenewBill(DeleteRenewBillDTO deleteRenewBillDTO) {
         //1.获取当前登录用户
         Long userId = UserContext.getUser();
@@ -157,7 +157,7 @@ public class RenewBillServiceImpl extends ServiceImpl<RenewBillMapper, RenewBill
      */
     @Override
     @CacheEvict(value = CACHE_NAMESPACE,
-            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':page:*'")
+            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':renewBillList'")
     public R<String> recoverRenewBill(DeleteRenewBillDTO deleteRenewBillDTO) {
         //1.获取当前登录用户
         Long userId = UserContext.getUser();
@@ -209,7 +209,7 @@ public class RenewBillServiceImpl extends ServiceImpl<RenewBillMapper, RenewBill
      */
     @Override
     @CacheEvict(value = CACHE_NAMESPACE,
-            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':page:*'")
+            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':renewBillList'")
     public R<String> realDeleteRenewBill(DeleteRenewBillDTO deleteRenewBillDTO) {
         //1.获取当前登录用户
         Long userId = UserContext.getUser();
