@@ -21,28 +21,35 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .cors().and() //启用 CORS
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // 使用这种方式更明确
                 .authorizeRequests()
-                .anyRequest().permitAll(); // 允许所有请求
+                .anyRequest().permitAll();
         return http.build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowCredentials(true); // 允许携带凭证
-        configuration.addAllowedMethod("*"); // 允许所有 HTTP 方法
-        configuration.addAllowedHeader("*"); // 允许所有请求头
-        configuration.addExposedHeader("Authorization"); // 暴露自定义头（如需要）
 
-        // 动态允许来源
-        configuration.addAllowedOriginPattern("*"); // Spring Boot 2.4+ 支持通配符
+        // 改为true，允许携带凭证
+        configuration.setAllowCredentials(true);
 
-        // 设置预检请求的缓存时间
+        // 明确指定允许的域名，而不是使用通配符
+        configuration.addAllowedOrigin("https://shiro.mikudesi.top");
+        configuration.addAllowedOrigin("http://localhost:5173");  // 添加前端开发服务器地址
+        configuration.addAllowedOrigin("http://106.14.59.65:5239");  // 添加前端开发服务器地址
+        
+        configuration.addAllowedMethod("*");
+        configuration.addAllowedHeader("*");
+        configuration.addExposedHeader("Authorization");
+
+        // 如果需要允许多个域名，可以这样添加
+        // configuration.addAllowedOrigin("https://其他域名.com");
+
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // 应用到所有路径
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }

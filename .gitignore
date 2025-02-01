@@ -5,6 +5,7 @@ target/
 !**/src/test/**/target/
 **/application-local.yaml
 **/application-online.yaml
+**/application-shanghai.yaml
 
 ### STS ###
 .apt_generated
