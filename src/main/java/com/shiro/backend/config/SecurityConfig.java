@@ -37,8 +37,10 @@ public class SecurityConfig {
         // 明确指定允许的域名，而不是使用通配符
         configuration.addAllowedOrigin("https://shiro.mikudesi.top");
         configuration.addAllowedOrigin("http://localhost:5173");  // 添加前端开发服务器地址
-        configuration.addAllowedOrigin("http://106.14.59.65:5239");  // 添加前端开发服务器地址
-        
+        configuration.addAllowedOrigin("http://192.168.31.58:5173");  // 添加前端开发服务器地址
+
+        configuration.addAllowedOrigin("http://106.14.59.65:15200");  // 添加前端开发服务器地址
+
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader("Authorization");

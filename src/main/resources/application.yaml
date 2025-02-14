@@ -5,7 +5,7 @@ spring:
     name: shiro
 
   profiles:
-    active: shanghai
+    active: local
 
   datasource:
     url: jdbc:mysql://${db.host}:${db.port}/${db.database}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8
