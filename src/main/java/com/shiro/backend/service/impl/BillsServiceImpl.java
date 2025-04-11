@@ -1,7 +1,6 @@
 package com.shiro.backend.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.shiro.backend.constant.MessageConstant;
@@ -81,7 +80,7 @@ public class BillsServiceImpl extends ServiceImpl<BillsMapper, Bills> implements
     @Override
     @Cacheable(
             value = CACHE_NAMESPACE,
-            key = "T(com.shiro.backend.utils.UserContext).getUser()  + ':' + #queryMonthBillsDTO.year + '-' + #queryMonthBillsDTO.month",
+            key = "T(com.shiro.backend.utils.UserContext).getUser() + ':' + #queryMonthBillsDTO.year + '-' + #queryMonthBillsDTO.month",
             unless = "#result == null || #result.isEmpty()"
     )
     public List<QueryBillsVO> queryBills(QueryMonthBillsDTO queryMonthBillsDTO) {
@@ -89,15 +88,15 @@ public class BillsServiceImpl extends ServiceImpl<BillsMapper, Bills> implements
         int year = queryMonthBillsDTO.getYear();
         int month = queryMonthBillsDTO.getMonth();
         Long userid = UserContext.getUser();
-        //2.创建条件构造器
-        QueryWrapper<Bills> queryWrapper = new QueryWrapper<>();
-        queryWrapper.apply("YEAR(date)={0} AND MONTH(date)={1} AND userid={2}", year, month, userid);
-        //3.查询数据
-        List<Bills> bills = billsMapper.selectList(queryWrapper);
-        //4.空数据处理，数据转换处理
+
+        //2.使用联表查询方法获取账单及分类名称
+        List<Bills> bills = billsMapper.selectBillsWithCategoryByMonth(year, month, userid);
+
+        //3.空数据处理，数据转换处理
         if (bills == null || bills.isEmpty()) {
             return Collections.emptyList();
         }
+
         return bills.stream().map(QueryBillsVO::toVO).toList();
     }
 

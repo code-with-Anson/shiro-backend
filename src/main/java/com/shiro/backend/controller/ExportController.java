@@ -40,7 +40,7 @@ public class ExportController {
             queryDTO.setYear(year);
             queryDTO.setMonth(month);
             List<QueryBillsVO> bills = billsService.queryBills(queryDTO);
-
+            
             log.info("成功查询到账单数据 - 数量: {}", bills != null ? bills.size() : 0);
             if (bills == null || bills.isEmpty()) {
                 log.warn("查询结果为空，导出的Excel将不包含数据行");
@@ -91,6 +91,7 @@ public class ExportController {
             queryDTO.setYear(year);
             queryDTO.setMonth(month);
             List<QueryBillsVO> bills = billsService.queryBills(queryDTO);
+
 
             // 生成Excel文件
             byte[] excelBytes = ExcelExportUtils.exportMonthlyBills(bills, year, month);

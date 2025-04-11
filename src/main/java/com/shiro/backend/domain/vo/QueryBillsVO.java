@@ -38,6 +38,9 @@ public class QueryBillsVO implements Serializable {
     @ApiModelProperty(value = "逻辑删除字段，标记是否被删除")
     private isDeletedEnum isDeleted;
 
+    @ApiModelProperty(value = "账单分类名称，前端展示用")
+    private String categoryName;
+
     /**
      * 将查询到的数据封装为VO
      *
@@ -53,6 +56,7 @@ public class QueryBillsVO implements Serializable {
         vo.setDetail(bills.getDetail());
         vo.setDate(bills.getDate());
         vo.setIsDeleted(bills.getIsDeleted());
+        vo.setCategoryName(bills.getCategoryName()); // 添加分类名称的设置
         return vo;
     }
 }

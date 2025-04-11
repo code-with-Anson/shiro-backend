@@ -42,4 +42,29 @@
         </foreach>
         AND userid = #{userId}
     </select>
+
+
+    <select id="selectBillsWithCategoryByMonth" resultMap="BillWithCategoryMap">
+        SELECT b.*, c.name as category_name
+        FROM bills b
+                 LEFT JOIN category c ON b.category_id = c.id
+        WHERE YEAR(b.date) = #{year}
+          AND MONTH(b.date) = #{month}
+          AND b.userid = #{userid}
+          AND b.is_deleted = 0
+    </select>
+
+    <resultMap id="BillWithCategoryMap" type="com.shiro.backend.domain.po.Bills">
+        <id property="id" column="id"/>
+        <result property="userid" column="userid"/>
+        <result property="amount" column="amount"/>
+        <result property="type" column="type"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="detail" column="detail"/>
+        <result property="date" column="date"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="categoryName" column="category_name"/>
+    </resultMap>
 </mapper>

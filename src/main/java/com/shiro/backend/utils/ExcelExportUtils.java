@@ -10,7 +10,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Excel导出工具类
@@ -67,6 +69,9 @@ public class ExcelExportUtils {
                 noDataCell.setCellValue("该月份没有账单数据");
                 sheet.addMergedRegion(new org.apache.poi.ss.util.CellRangeAddress(1, 1, 0, 4));
             } else {
+                billsList = billsList.stream()
+                        .sorted(Comparator.comparing(QueryBillsVO::getDate))
+                        .collect(Collectors.toList());
                 // 填充数据行
                 fillDataRows(sheet, billsList, dateStyle, amountStyle);
 
@@ -126,9 +131,9 @@ public class ExcelExportUtils {
                 Cell typeCell = row.createCell(2);
                 typeCell.setCellValue(bill.getType() == BillType.INCOME ? "收入" : "支出");
 
-                // 分类ID
+                // 分类名称
                 Cell categoryCell = row.createCell(3);
-                categoryCell.setCellValue("分类ID: " + bill.getCategoryId());
+                categoryCell.setCellValue(bill.getCategoryName());
 
                 // 详情
                 Cell detailCell = row.createCell(4);

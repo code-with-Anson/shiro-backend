@@ -1,9 +1,6 @@
 package com.shiro.backend.domain.po;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.shiro.backend.enums.BillType;
 import com.shiro.backend.enums.isDeletedEnum;
 import io.swagger.annotations.ApiModel;
@@ -66,5 +63,8 @@ public class Bills implements Serializable {
     @ApiModelProperty(value = "记录更新时间")
     private LocalDateTime updatedAt;
 
-
+    // 添加分类名称字段，不对应数据库字段
+    @ApiModelProperty(value = "账单分类名称，不对应数据库字段，用于联表查询后返回数据用")
+    @TableField(exist = false)
+    private String categoryName;
 }
