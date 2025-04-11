@@ -5,7 +5,7 @@ spring:
     name: shiro
 
   profiles:
-    active: local
+    active: shanghai
 
   datasource:
     url: jdbc:mysql://${db.host}:${db.port}/${db.database}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8
@@ -47,6 +47,19 @@ logging:
           controller: info
   pattern:
     dateformat: HH:mm:ss:SSS
+
+cors:
+  allowed-methods:
+    - GET
+    - POST
+    - PUT
+    - DELETE
+  allowed-headers:
+    - "*"
+  exposed-headers:
+    - "*"
+  allow-credentials: true
+  max-age: 3600
 
 mybatis-plus:
   type-aliases-package: com.shiro.backend.domain.po
