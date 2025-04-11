@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 @Api(tags = "数据导出接口")
@@ -29,48 +30,45 @@ public class ExportController {
 
     private final IBillsService billsService;
 
-    @ApiOperation("导出指定月份账单数据")
+    @ApiOperation("导出账单数据(月度或年度)")
     @GetMapping("/bills/monthly")
-    public ResponseEntity<byte[]> exportMonthlyBills(@RequestParam int year, @RequestParam int month) {
+    public ResponseEntity<byte[]> exportMonthlyBills(
+            @RequestParam int year,
+            @RequestParam(required = false) Integer month) {
         log.info("开始导出账单 - 年份: {}, 月份: {}", year, month);
 
         try {
-            // 查询指定月份的账单数据
-            QueryMonthBillsDTO queryDTO = new QueryMonthBillsDTO();
-            queryDTO.setYear(year);
-            queryDTO.setMonth(month);
-            List<QueryBillsVO> bills = billsService.queryBills(queryDTO);
-            
-            log.info("成功查询到账单数据 - 数量: {}", bills != null ? bills.size() : 0);
-            if (bills == null || bills.isEmpty()) {
-                log.warn("查询结果为空，导出的Excel将不包含数据行");
+            List<QueryBillsVO> bills;
+            String fileName;
+
+            if (month == null) {
+                // 导出全年账单
+                bills = getYearlyBills(year);
+                fileName = year + "年全年账单明细.xlsx";
+                log.info("开始导出全年账单 - 年份: {}", year);
             } else {
-                // 记录第一笔账单信息，帮助调试
-                QueryBillsVO firstBill = bills.get(0);
-                log.info("第一条账单信息: ID={}, 金额={}, 类型={}, 日期={}",
-                        firstBill.getId(), firstBill.getAmount(),
-                        firstBill.getType(), firstBill.getDate());
+                // 导出月度账单
+                QueryMonthBillsDTO queryDTO = new QueryMonthBillsDTO();
+                queryDTO.setYear(year);
+                queryDTO.setMonth(month);
+                bills = billsService.queryBills(queryDTO);
+                fileName = year + "年" + month + "月账单明细.xlsx";
             }
 
-            // 生成Excel文件
-            log.info("开始生成Excel文件...");
-            byte[] excelBytes = ExcelExportUtils.exportMonthlyBills(bills, year, month);
-            log.info("Excel文件生成完成，大小: {} 字节", excelBytes.length);
+            log.info("成功查询到账单数据 - 数量: {}", bills != null ? bills.size() : 0);
 
-            // 构建文件名
-            String fileName = year + "年" + month + "月账单明细.xlsx";
+            // 生成Excel文件
+            byte[] excelBytes = ExcelExportUtils.exportMonthlyBills(bills, year, month);
+
+            // 构建文件名并编码
             String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8)
                     .replace("+", "%20");
-            log.info("文件名: {}, URL编码后: {}", fileName, encodedFileName);
 
             // 构建响应头
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-
             headers.setContentDispositionFormData("attachment", encodedFileName);
 
-
-            log.info("导出完成，准备返回响应");
             return ResponseEntity.ok()
                     .headers(headers)
                     .body(excelBytes);
@@ -80,26 +78,37 @@ public class ExportController {
         }
     }
 
-    @ApiOperation("导出指定月份账单数据到本地文件系统")
+    @ApiOperation("导出账单数据到本地文件系统(月度或年度)")
     @GetMapping("/bills/monthly/local")
-    public ResponseEntity<String> exportMonthlyBillsToLocal(@RequestParam int year, @RequestParam int month) {
+    public ResponseEntity<String> exportMonthlyBillsToLocal(
+            @RequestParam int year,
+            @RequestParam(required = false) Integer month) {
         log.info("开始导出账单到本地文件 - 年份: {}, 月份: {}", year, month);
 
         try {
-            // 查询指定月份的账单数据
-            QueryMonthBillsDTO queryDTO = new QueryMonthBillsDTO();
-            queryDTO.setYear(year);
-            queryDTO.setMonth(month);
-            List<QueryBillsVO> bills = billsService.queryBills(queryDTO);
+            List<QueryBillsVO> bills;
+            String fileName;
 
+            if (month == null) {
+                // 导出全年账单
+                bills = getYearlyBills(year);
+                fileName = year + "年全年账单明细.xlsx";
+                log.info("开始导出全年账单到本地文件 - 年份: {}", year);
+            } else {
+                // 导出月度账单
+                QueryMonthBillsDTO queryDTO = new QueryMonthBillsDTO();
+                queryDTO.setYear(year);
+                queryDTO.setMonth(month);
+                bills = billsService.queryBills(queryDTO);
+                fileName = year + "年" + month + "月账单明细.xlsx";
+            }
 
             // 生成Excel文件
             byte[] excelBytes = ExcelExportUtils.exportMonthlyBills(bills, year, month);
 
-            // 确定保存路径（这里使用用户的Downloads文件夹）
+            // 确定保存路径（这里使用用户的桌面）
             String userHome = System.getProperty("user.home");
-            String downloadDir = userHome + "/Downloads/";
-            String fileName = year + "年" + month + "月账单明细.xlsx";
+            String downloadDir = userHome + "/Desktop/";
             String filePath = downloadDir + fileName;
 
             // 确保目录存在
@@ -117,5 +126,23 @@ public class ExportController {
             log.error("导出Excel到本地文件过程中发生错误", e);
             return ResponseEntity.internalServerError().body("导出失败: " + e.getMessage());
         }
+    }
+
+    // 私有辅助方法，获取全年账单
+    private List<QueryBillsVO> getYearlyBills(int year) {
+        List<QueryBillsVO> allYearBills = new ArrayList<>();
+
+        // 循环查询每个月的账单并合并
+        for (int m = 1; m <= 12; m++) {
+            QueryMonthBillsDTO queryDTO = new QueryMonthBillsDTO();
+            queryDTO.setYear(year);
+            queryDTO.setMonth(m);
+            List<QueryBillsVO> monthBills = billsService.queryBills(queryDTO);
+            if (monthBills != null && !monthBills.isEmpty()) {
+                allYearBills.addAll(monthBills);
+            }
+        }
+
+        return allYearBills;
     }
 }
