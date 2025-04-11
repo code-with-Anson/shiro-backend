@@ -1,9 +1,14 @@
 package com.shiro.backend.controller;
 
 import com.shiro.backend.domain.dto.QueryMonthBillsDTO;
+import com.shiro.backend.domain.po.Users;
 import com.shiro.backend.domain.vo.QueryBillsVO;
 import com.shiro.backend.service.IBillsService;
+import com.shiro.backend.service.IUsersService;
+import com.shiro.backend.utils.EmailSender;
 import com.shiro.backend.utils.ExcelExportUtils;
+import com.shiro.backend.utils.R;
+import com.shiro.backend.utils.UserContext;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +34,8 @@ import java.util.List;
 public class ExportController {
 
     private final IBillsService billsService;
+    private final IUsersService usersService; // 添加用户服务依赖
+    private final EmailSender emailSender; // 添加邮件发送服务依赖
 
     @ApiOperation("导出账单数据(月度或年度)")
     @GetMapping("/bills/monthly")
@@ -144,5 +151,56 @@ public class ExportController {
         }
 
         return allYearBills;
+    }
+
+    @ApiOperation("导出账单数据并发送至用户邮箱")
+    @GetMapping("/bills/monthly/email")
+    public R<String> exportMonthlyBillsToEmail(
+            @RequestParam int year,
+            @RequestParam(required = false) Integer month) {
+        log.info("开始导出账单并发送至用户邮箱 - 年份: {}, 月份: {}", year, month);
+
+        try {
+            // 获取当前用户ID
+            Long userId = UserContext.getUser();
+
+            // 通过用户服务获取用户邮箱
+            Users user = usersService.getById(userId);
+            if (user == null) {
+                return R.failure("用户信息获取失败");
+            }
+            String userEmail = user.getEmail();
+
+            // 准备数据和文件名
+            List<QueryBillsVO> bills;
+            String fileName;
+
+            if (month == null) {
+                // 导出全年账单
+                bills = getYearlyBills(year);
+                fileName = year + "年全年账单明细.xlsx";
+            } else {
+                // 导出月度账单
+                QueryMonthBillsDTO queryDTO = new QueryMonthBillsDTO();
+                queryDTO.setYear(year);
+                queryDTO.setMonth(month);
+                bills = billsService.queryBills(queryDTO);
+                fileName = year + "年" + month + "月账单明细.xlsx";
+            }
+
+            // 生成Excel文件
+            byte[] excelBytes = ExcelExportUtils.exportMonthlyBills(bills, year, month);
+
+            // 设置邮件主题
+            String subject = fileName.replace(".xlsx", "");
+
+            // 发送邮件
+            emailSender.sendExcelAttachment(userEmail, subject, excelBytes, fileName);
+
+            return R.success("账单数据已成功发送到您的邮箱: " + userEmail);
+        } catch (Exception e) {
+            log.error("导出Excel并发送邮件过程中发生错误", e);
+            return R.failure("导出失败: " + e.getMessage());
+        }
     }
 }
