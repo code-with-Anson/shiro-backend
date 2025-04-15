@@ -1,7 +1,8 @@
 package com.shiro.backend.mapper;
 
-import com.shiro.backend.domain.po.BillMonthStatistics;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.shiro.backend.domain.po.BillMonthStatistics;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -13,4 +14,14 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface BillMonthStatisticsMapper extends BaseMapper<BillMonthStatistics> {
 
+    /**
+     * 根据年月和用户ID更新或插入月度统计数据
+     *
+     * @param userId 用户ID
+     * @param year   年份
+     * @param month  月份
+     */
+    void updateStatisticsForMonth(@Param("userId") Long userId,
+                                  @Param("year") int year,
+                                  @Param("month") int month);
 }

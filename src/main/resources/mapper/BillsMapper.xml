@@ -67,4 +67,16 @@
         <result property="updatedAt" column="updated_at"/>
         <result property="categoryName" column="category_name"/>
     </resultMap>
+
+
+    <!-- 忽略逻辑删除标记查询账单 -->
+    <select id="selectBillsWithoutLogicDelete" resultType="com.shiro.backend.domain.po.Bills">
+        SELECT id, date
+        FROM bills
+        WHERE id IN
+        <foreach collection="billIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND userid = #{userId}
+    </select>
 </mapper>

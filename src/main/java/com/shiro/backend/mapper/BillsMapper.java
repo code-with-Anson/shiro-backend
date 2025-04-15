@@ -35,4 +35,12 @@ public interface BillsMapper extends BaseMapper<Bills> {
     List<Bills> selectBillsWithCategoryByMonth(@Param("year") int year,
                                                @Param("month") int month,
                                                @Param("userid") Long userid);
+    
+    /**
+     * 查询账单基本信息，忽略逻辑删除标记
+     *
+     * @param billIds 账单ID列表
+     * @return 账单信息列表
+     */
+    List<Bills> selectBillsWithoutLogicDelete(@Param("billIds") List<Long> billIds, @Param("userId") Long userId);
 }
