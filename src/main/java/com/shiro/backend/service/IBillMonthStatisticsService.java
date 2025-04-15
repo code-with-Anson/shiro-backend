@@ -2,6 +2,7 @@ package com.shiro.backend.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.shiro.backend.domain.po.BillMonthStatistics;
+import com.shiro.backend.domain.vo.BillStatisticsVO;
 
 /**
  * <p>
@@ -20,4 +21,15 @@ public interface IBillMonthStatisticsService extends IService<BillMonthStatistic
      * @param month  月份
      */
     void updateStatistics(Long userId, int year, int month);
+
+
+    /**
+     * 获取指定年月或全年的统计数据
+     *
+     * @param userId 用户ID
+     * @param year   年份
+     * @param month  月份，可为null，为null时获取全年数据
+     * @return 统计数据
+     */
+    BillStatisticsVO getStatistics(Long userId, Integer year, Integer month);
 }
