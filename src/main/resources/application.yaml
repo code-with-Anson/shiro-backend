@@ -36,18 +36,22 @@ spring:
       cache-null-values: true
       key-prefix: "shiro:"    # 添加应用级别的缓存前缀
       use-key-prefix: true    # 启用缓存前缀
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${nacos.server-addr}
+
 
 logging:
+  charset:
+    file: UTF-8
   level:
-    com:
-      shiro:
-        backend:
-          mapper: debug
-          service: info
-          controller: info
+    com.shiro.backend: debug
   pattern:
     dateformat: HH:mm:ss:SSS
-
+  file:
+    name: shiro.log
+    path: "logs/${spring.application.name}"
 cors:
   allowed-methods:
     - GET
