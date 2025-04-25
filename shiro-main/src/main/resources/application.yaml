@@ -1,0 +1,140 @@
+server:
+  port: 3951
+spring:
+  application:
+    name: shiro-main
+
+  profiles:
+    active: shanghai
+
+  datasource:
+    url: jdbc:mysql://${db.host}:${db.port}/${db.database}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8
+    username: ${db.username}
+    password: ${db.password}
+
+  mail:
+    host: ${email.host}  # 或其他邮件服务器
+    port: ${email.port}
+    username: ${email.username}
+    password: ${email.password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  redis:
+    host: ${redis.host}
+    port: ${redis.port}
+    password: ${redis.password}
+    database: ${redis.database}
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000
+      cache-null-values: true
+      key-prefix: "shiro:"    # 添加应用级别的缓存前缀
+      use-key-prefix: true    # 启用缓存前缀
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${nacos.server-addr}
+
+
+logging:
+  charset:
+    file: UTF-8
+  level:
+    com.shiro.backend: debug
+  pattern:
+    dateformat: HH:mm:ss:SSS
+  file:
+    name: shiro-main.log
+    path: "logs/${spring.application.name}"
+cors:
+  allowed-methods:
+    - GET
+    - POST
+    - PUT
+    - DELETE
+  allowed-headers:
+    - "*"
+  exposed-headers:
+    - "*"
+  allow-credentials: true
+  max-age: 3600
+
+mybatis-plus:
+  type-aliases-package: com.shiro.main.domain.po
+  global-config:
+    db-config:
+      logic-delete-field: is_deleted
+  configuration:
+    default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
+
+knife4j:
+  enable: true
+  openapi:
+    title: Shiro官方文档
+    description: "致力于让生活更清晰"
+    email: a2795757650@gmail.com
+    concat: Anson
+    group:
+      default:
+        group-name: main
+        api-rule: package
+        api-rule-resources:
+          - com.shiro.main.controller
+
+user:
+  default-avatar: ${user.avatar-url}
+  default-renew-category: ${user.default-renew-category}}
+shiro:
+  jwt:
+    # 设置jwt签名加密时使用的秘钥
+    secret-key: ${shiro.jwt.secret-key}
+    # 设置jwt过期时间为30天
+    secret-expire: ${shiro.jwt.secret-expire}
+    # 设置前端传递过来的令牌名称
+    user-token-name: ${shiro.jwt.user-token-name}
+
+  auth:
+    exclude-paths:
+      - /doc.html
+      - /users/register
+      - /users/login
+      - /users/forget
+      - /users/code-login
+
+
+bill:
+  category:
+    expense:
+      - name: "餐饮"
+        sort: 1
+      - name: "交通"
+        sort: 2
+      - name: "购物"
+        sort: 3
+      - name: "生活"
+        sort: 4
+      - name: "娱乐"
+        sort: 5
+      - name: "医疗"
+        sort: 6
+      - name: "教育"
+        sort: 7
+      - name: "其他支出"
+        sort: 8
+    income:
+      - name: "工资"
+        sort: 1
+      - name: "奖金"
+        sort: 2
+      - name: "理财"
+        sort: 3
+      - name: "红包"
+        sort: 4
+      - name: "其他收入"
+        sort: 5

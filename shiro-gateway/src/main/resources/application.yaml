@@ -1,0 +1,72 @@
+server:
+  port: 3952
+spring:
+  application:
+    name: shiro-gateway
+
+  profiles:
+    active: shanghai
+
+  datasource:
+    url: jdbc:mysql://${db.host}:${db.port}/${db.database}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8
+    username: ${db.username}
+    password: ${db.password}
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${nacos.server-addr}
+    gateway:
+      routes:
+        - id: shiro-ai
+          uri: lb://shiro-ai
+          predicates:
+            - Path=/ai/**
+        - id: shiro-main
+          uri: lb://shiro-main
+          predicates:
+            - Path=/**
+
+
+
+logging:
+  charset:
+    file: UTF-8
+  level:
+    com.shiro.backend: debug
+  pattern:
+    dateformat: HH:mm:ss:SSS
+  file:
+    name: shiro-gateway.log
+    path: "logs/${spring.application.name}"
+
+cors:
+  allowed-methods:
+    - GET
+    - POST
+    - PUT
+    - DELETE
+  allowed-headers:
+    - "*"
+  exposed-headers:
+    - "*"
+  allow-credentials: true
+  max-age: 3600
+
+shiro:
+  jwt:
+    # 设置jwt签名加密时使用的秘钥
+    secret-key: ${shiro.jwt.secret-key}
+    # 设置jwt过期时间为30天
+    secret-expire: ${shiro.jwt.secret-expire}
+    # 设置前端传递过来的令牌名称
+    user-token-name: ${shiro.jwt.user-token-name}
+
+  auth:
+    exclude-paths:
+      - /doc.html
+      - /users/register
+      - /users/login
+      - /users/forget
+      - /users/code-login
+      - /ai/**
