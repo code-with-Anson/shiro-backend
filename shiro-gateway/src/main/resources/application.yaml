@@ -22,6 +22,8 @@ spring:
           uri: lb://shiro-ai
           predicates:
             - Path=/ai/**
+          filters:
+            - StripPrefix=1  # 添加这一行，去除一级前缀(/ai)
         - id: shiro-main
           uri: lb://shiro-main
           predicates:
