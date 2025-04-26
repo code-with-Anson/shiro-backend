@@ -26,6 +26,14 @@ spring:
           uri: lb://shiro-main
           predicates:
             - Path=/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            exposedHeaders: "*"  # 添加这一行，暴露自定义头部
+            maxAge: 3600
 
 
 
@@ -39,19 +47,6 @@ logging:
   file:
     name: shiro-gateway.log
     path: "logs/${spring.application.name}"
-
-cors:
-  allowed-methods:
-    - GET
-    - POST
-    - PUT
-    - DELETE
-  allowed-headers:
-    - "*"
-  exposed-headers:
-    - "*"
-  allow-credentials: true
-  max-age: 3600
 
 shiro:
   jwt:
@@ -70,3 +65,4 @@ shiro:
       - /users/forget
       - /users/code-login
       - /ai/**
+
