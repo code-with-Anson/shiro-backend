@@ -66,5 +66,5 @@ shiro:
       - /users/login
       - /users/forget
       - /users/code-login
-      - /ai/**
+      # 为了解析前端传递的token，传递userId，所以ai路径也需要拦截  - /ai/**
 
