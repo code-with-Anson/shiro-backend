@@ -24,6 +24,10 @@ spring:
             - Path=/ai/**
         #          filters:
         #            - StripPrefix=1  # 添加这一行，去除一级前缀(/ai)
+        - id: shiro-ai-test
+          uri: lb://shiro-ai
+          predicates:
+            - Path=/test/ai/**
         - id: shiro-main
           uri: lb://shiro-main
           predicates:
@@ -65,5 +69,6 @@ shiro:
       - /users/login
       - /users/forget
       - /users/code-login
+      - /test/**
       # 为了解析前端传递的token，传递userId，所以ai路径也需要拦截  - /ai/**
 
