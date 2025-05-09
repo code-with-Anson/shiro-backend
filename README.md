@@ -1,56 +1,243 @@
-# 汐落（Shiro）软件功能概述
+<p align="center">用汐落，让财务管理如潮汐般自然流畅</p>
 
-汐落是一款个人财务管理软件，目前已经初步完成后端基础功能和移动端网页，主要特性包括：
+# 汐落（Shiro）- 让生活清晰有序的个人记账系统
+
+## 项目介绍
+
+汐落（Shiro）的设计理念源自日语"shiro"（白色），象征清晰与纯净的生活态度，旨在帮助用户通过记账使生活变得有序且宁静。如同潮汐的涨落一样自然，记录每一笔收支，让财务状况一目了然。
+
+## 项目架构
+
+汐落采用前后端分离的微服务架构设计，后端分为两个独立仓库：
+
+### 前端
+
+- Vue3 + TypeScript
+- 技术栈：axios、pinia、vue-router、vant、element-plus、apache-echart等
+- 支持移动端和桌面端网页
+
+### 后端 (分为两个独立仓库)
+
+#### 1. shiro-backend 仓库 (Spring Boot 2.7)
+
+- 多模块结构
+  - **shiro-main**: 核心记账功能模块
+  - **shiro-gateway**: API网关模块
+- 技术栈
+  - Spring Boot 2.7
+  - MyBatis-Plus
+  - Spring Cloud Alibaba (Nacos)
+  - Redis
+  - MySQL
+  - JWT
+
+#### 2. shiro-ai 仓库 (Spring Boot 3.4)
+
+- 基于 Spring AI 和 OpenAI 接口
+- 提供 AI 助手功能
+- 使用 Spring Boot 3.4 版本
 
 ## 核心功能
 
-1. **账单记录**
-   - 记录用户收入和支出
-   - 支持选择对应账单类型（如"饮食"、"购物"支出或"工资"、"兼职"收入）
-   - 可添加账单备注信息
-   - 支持按月/年查询账单
-2. **循环付费商品记录**
-   - 独立于普通账单的系统
-   - 记录循环付费商品信息（名称、开始结束时间、循环周期等）
-   - 自动换算平均月付/年付价格
-   - 记录自动续费状态
-3. **数据统计与展示**
-   - 按月/年查看账单
-   - 提供账单分类统计
-   - 支持分类查询账单
-4. **用户管理**
-   - 用户注册和登录（支持邮箱登录和验证码登录）
-   - 管理个人信息（邮箱、姓名、性别等）
-   - 上传和更新头像
-5. **数据导出**
-   - 支持导出账单数据到Excel
-   - 可发送到用户邮箱
-   - 可导出到本地文件系统
-6. **分类管理**
-   - 支持常规账单分类
-   - 支持循环账单分类
-   - 用户注册时自动创建默认分类
+### 账单管理 (shiro-main)
 
-## 技术特点
+- **账单记录**：轻松记录日常收入和支出
+- **分类管理**：支持自定义收支分类
+- **数据可视化**：直观展示消费分布和财务趋势
+- **月度/年度报表**：自动生成消费统计和分析
 
-1. **现代化后端架构**
-   - 基于Spring Boot 2.7 + MyBatis-Plus
-   - 使用Redis进行缓存管理
-   - JWT认证机制
-   - 采用AOP切面编程实现账单统计
-2. **安全性设计**
-   - 密码加密存储
-   - 邮箱验证码功能
-   - 用户认证和授权机制
-3. **优化的数据处理**
-   - 数据库级联操作
-   - 逻辑删除和物理删除支持
-   - 支持数据统计和分析
+### 循环付费商品记录 (shiro-main)
 
-汐落的设计理念源自日语"shiro"（白色），象征清晰与纯净的生活态度，旨在帮助用户通过记账使生活变得有序且宁静。
+- 独立于普通账单的系统
+- 记录订阅服务、会员等循环付费项目
+- 自动计算平均月付/年付价格
+- 自动续费状态管理
 
+### 数据导出 (shiro-main)
 
+- 导出账单数据到Excel
+- 支持邮件发送导出结果
+- 支持本地文件系统导出
 
-## 初始化数据库
+### AI助手 (shiro-ai)
 
-数据库可以创建一个shiro数据库，使用shiro-init.sql脚本初始化数据库
+- 基于OpenAI接口的智能助手
+- 提供财务管理建议和分析
+- 支持持续对话和历史记录
+- 角色扮演式交互体验
+
+## 项目特色
+
+1. **AOP切面统计**：使用AOP切面编程实现账单统计，代码解耦且高效
+2. **多级缓存设计**：Redis + 二级缓存提升查询性能
+3. **安全特性**：密码加密存储、邮箱验证码、JWT认证
+4. **响应式设计**：同时支持移动端和桌面端访问
+5. **微服务架构**：可扩展的微服务设计，支持独立部署
+
+## 快速开始
+
+### 环境要求
+
+- shiro-backend: JDK 17+
+- shiro-ai: JDK 17+
+- Maven 3.6+
+- MySQL 8.0+
+- Redis 6.0+
+- Nacos 2.0+
+
+### 数据库初始化
+
+1. 创建数据库
+
+```sql
+CREATE DATABASE shiro;
+CREATE DATABASE shiro_ai;
+```
+
+1. 执行初始化脚本
+
+```bash
+# 主数据库初始化
+mysql -u username -p shiro < shiro-backend/initSQL/shiro-init.sql
+
+# AI模块数据库初始化
+mysql -u username -p shiro_ai < shiro-ai/initSQL/shiro-ai-init.sql
+```
+
+### 配置文件
+
+#### shiro-backend 配置
+
+创建 `shiro-main/src/main/resources/application-local.yaml`:
+
+```yaml
+db:
+  host: localhost
+  port: 3306
+  database: shiro
+  username: your-username
+  password: your-password
+
+redis:
+  host: localhost
+  port: 6379
+  password: 
+  database: 0
+  
+nacos:
+  server-addr: localhost:8848
+  
+shiro:
+  jwt:
+    secret-key: your-secret-key
+    secret-expire: 2592000000
+    user-token-name: authorization
+
+# 其他必要配置...
+```
+
+创建 `shiro-gateway/src/main/resources/application-local.yaml` 使用类似配置。
+
+#### shiro-ai 配置
+
+创建 `src/main/resources/application-local.yaml`:
+
+```yaml
+datasource:
+  ip: localhost
+  port: 3306
+  username: your-username
+  password: your-password
+
+ai:
+  openai:
+    api-key: your-openai-api-key
+    base-url: https://api.openai.com
+    default-deepseek-model: gpt-3.5-turbo
+
+nacos:
+  server-addr: localhost:8848
+
+# 其他必要配置...
+```
+
+### 启动服务
+
+1. 启动Nacos服务
+2. 构建并启动 shiro-backend
+
+```bash
+cd shiro-backend
+mvn clean package -DskipTests
+
+# 启动网关
+java -jar shiro-gateway/target/shiro-gateway.jar
+
+# 启动主服务
+java -jar shiro-main/target/shiro-main.jar
+```
+
+1. 构建并启动 shiro-ai
+
+```bash
+cd shiro-ai
+mvn clean package -DskipTests
+java -jar target/shiro-ai-0.0.1-SNAPSHOT.jar
+```
+
+## 开发说明
+
+### 仓库结构
+
+#### shiro-backend (Spring Boot 2.7)
+
+- **shiro-gateway**: API网关，负责路由、认证和鉴权
+- **shiro-main**: 核心业务逻辑模块，包含记账、统计等功能
+
+#### shiro-ai (Spring Boot 3.4)
+
+- 独立仓库，提供AI助手功能
+- 通过网关与主服务集成
+
+### 代码风格
+
+两个仓库均采用标准的Spring Boot应用结构：
+
+- controller：接口控制器
+- service：业务逻辑
+- mapper：数据访问
+- domain：数据模型
+  - po：持久化对象
+  - dto：数据传输对象
+  - vo：视图对象
+
+### API文档
+
+- shiro-backend API：http://localhost:3951/doc.html (Knife4j)
+- shiro-ai API：http://localhost:3950/doc.html (Springdoc)
+- 因为shiro-ai项目是springboot3.4，使用knife4j存在一些问题，所以这里非常建议在idea中安装apifox的插件，可以直接扫描整个项目的接口进行测试，会非常好用
+
+## 贡献指南
+
+欢迎提出任何建议！请遵循以下步骤：
+
+## 许可证
+
+## 许可证
+
+本项目采用 [Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/) 许可协议。
+
+根据此许可证：
+- 你可以自由地分享、复制、重新分发本代码，以及修改和构建本代码
+- 你必须给出适当的署名，提供指向本许可证的链接，并指明是否进行了修改
+- 你不得将本作品用于商业目的
+- 对于任何商业用途，请联系原作者获取特别授权
+
+## 联系方式
+
+- 项目作者：Anson
+- Email：anson@example.com
+
+------
+
+© 2025 汐落(Shiro) - 让财务管理如潮汐般自然流畅
